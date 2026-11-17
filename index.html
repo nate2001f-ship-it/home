@@ -62,10 +62,19 @@
   #dimEdit[hidden]{display:none}
   #dimEdit span{font-size:12px;color:#52606d;white-space:nowrap}
   #dimEdit input{width:92px;font:inherit;font-size:16px;text-align:center;padding:2px 4px;border:1px solid #c5ccd3;border-radius:5px}
+  #nameEdit{position:absolute;z-index:6;transform:translate(-50%,-50%);background:#fff;border:2px solid #0b5fff;border-radius:8px;padding:6px 8px;box-shadow:0 4px 14px rgba(0,0,0,.22);display:flex;flex-direction:column;gap:3px;align-items:center}
+  #nameEdit[hidden]{display:none}
+  #nameEdit span{font-size:12px;color:#52606d;white-space:nowrap}
+  #nameEdit input{width:150px;font:inherit;font-size:16px;text-align:center;padding:2px 4px;border:1px solid #c5ccd3;border-radius:5px}
+  #ctxMenu{position:absolute;z-index:7;background:#fff;border:1px solid #c5ccd3;border-radius:8px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.22);display:flex;flex-direction:column;gap:2px;min-width:120px}
+  #ctxMenu[hidden]{display:none}
+  #ctxMenu button{border:none;text-align:left;padding:8px 12px;border-radius:5px;white-space:nowrap}
   .it{stroke:#44505c;stroke-width:1.2;fill-opacity:.82}
   .it.sel{stroke:#0b5fff;stroke-width:2.5}
   .back{fill:#000;fill-opacity:.28;stroke:none}
-  .itxt{font-size:12px;text-anchor:middle;dominant-baseline:central;fill:#111;paint-order:stroke;stroke:rgba(255,255,255,.75);stroke-width:2.5px;pointer-events:none}
+  .itxt{font-size:12px;text-anchor:middle;dominant-baseline:central;fill:#111;paint-order:stroke;stroke:rgba(255,255,255,.8);stroke-width:3px;pointer-events:none}
+  .furn *{vector-effect:non-scaling-stroke} /* 家具的線條不跟著縮放變粗變細 */
+  .selbox{fill:none;stroke:#0b5fff;stroke-width:2.5}
   .clr line{stroke:#0b9e6f;stroke-width:1.2;stroke-dasharray:3 3}
   .clr text{font-size:12px;fill:#08724f;font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#fff;stroke-width:3px}
   .ms line{stroke:#d6336c;stroke-width:2}
@@ -91,6 +100,8 @@
       <button id="bRot" title="整張圖轉 90 度看">轉向</button>
     </div>
     <div id="dimEdit" hidden><span id="dimEditName"></span><input id="dimEditIn" type="number" min="0" step="1"><span>Enter 確定｜Esc 取消</span></div>
+    <div id="nameEdit" hidden><input id="nameEditIn" type="text" maxlength="30"><span>Enter 確定｜Esc 取消</span></div>
+    <div id="ctxMenu" hidden><button data-a="rotL">↺ 旋轉 90°</button><button data-a="rotR">↻ 旋轉 90°</button><button data-a="del" class="danger">刪除</button></div>
     <div id="hud"><div id="bar"></div><span id="barTxt"></span>　點圖上的數字＝改尺寸｜拖家具＝移動｜拖空白＝平移｜滾輪／兩指＝縮放</div>
   </main>
   <aside id="side">
@@ -116,7 +127,7 @@
     <div id="presets" class="chips"></div>
 
     <h2>選到的家具</h2>
-    <div id="noSel" class="muted">點一下圖上的家具，就能在這裡改名稱和尺寸。</div>
+    <div id="noSel" class="muted">點一下圖上的家具，就能在這裡改名稱和尺寸。在圖上連點兩下家具＝改名；按右鍵（手機長按）＝旋轉或刪除。</div>
     <div id="selForm" hidden>
       <label class="row"><span>名稱</span><input id="fName" type="text"></label>
       <label class="row"><span>寬（公分）</span><input id="fW" type="number" min="1" step="1"></label>
@@ -132,7 +143,7 @@
         <button id="bKeep">存成按鈕</button>
         <button id="bDel" class="danger">刪除</button>
       </div>
-      <div class="muted" style="margin-top:6px">深色那一邊＝靠背／靠牆面。方向鍵微調 1 公分（按住 Shift 是 10 公分）、R 旋轉、Delete 刪除。</div>
+      <div class="muted" style="margin-top:6px">椅背、床頭那一邊＝靠牆面；櫃子、冰箱有把手的那一邊是正面。家具照名稱畫（沙發、床、桌、椅、櫃、冰箱、神桌、馬桶、浴缸、洗衣機、洗手台、瓦斯爐、電視…），改名稱就換樣子。方向鍵微調 1 公分（按住 Shift 是 10 公分）、R 旋轉、Delete 刪除。在圖上連點兩下家具＝改名；按右鍵（手機長按）＝旋轉或刪除。</div>
     </div>
 
     <h2>家具清單</h2>
@@ -142,6 +153,7 @@
     <h2>顯示與吸附</h2>
     <label class="chk"><input type="checkbox" id="oGrid" checked>格線（40×40 公分一格）</label>
     <label class="chk"><input type="checkbox" id="oDims" checked>牆面尺寸標註</label>
+    <label class="chk"><input type="checkbox" id="oLabels" checked>家具上顯示名稱與尺寸</label>
     <label class="chk"><input type="checkbox" id="oClear" checked>選到的家具顯示離牆距離</label>
     <label class="chk"><input type="checkbox" id="oMagnet" checked>靠近牆自動貼齊</label>
     <label class="row"><span>移動單位</span>
@@ -361,7 +373,7 @@ const ROT_KEY='房屋平面配置_轉向';
 let startRot=(window.innerWidth<=820&&window.innerHeight>window.innerWidth)?0:90;
 try{const v=parseInt(localStorage.getItem(ROT_KEY),10);if([0,90,180,270].includes(v))startRot=v;}catch(_){}
 let view={cx:0,cy:0,s:1,rot:startRot}, cw=800, ch=600, fitted=false;
-const opts={grid:true,dims:true,clear:true,magnet:true,snap:1};
+const opts={grid:true,dims:true,clear:true,magnet:true,snap:1,labels:true};
 const measure={on:false,a:null,b:null,hover:null};
 let drag=null, hist=[], raf=0;
 
@@ -441,8 +453,205 @@ function clearances(it){
   }
   return out;
 }
+/* ================= 家具的樣子（俯視、帶立體感） ================= */
+// nate 2026-11-17：「幫我將裡面的家具的模擬圖做的細一點 像一點3D一點嗎」
+// 每件家具畫在自己的座標裡：單位公分，中心 (0,0)，寬 W 沿 x、深 D 沿 y，靠背／靠牆那一邊是 y=-D/2，正面是 y=+D/2。
+// 外面包一層 transform（移到位置、轉角度、乘上縮放）放到畫面上，所以裡面的數字都是公分，不用管縮放與轉向。
+// 立體感靠三樣：固定往畫面右下的影子（越高的家具影子越長）、亮面暗面的漸層、坐墊枕頭把手這些細節。
+// 畫成哪一種由「名稱」決定（furnType）；認不出來就畫成有厚度的方塊（fBox）。改名稱＝換樣子。
+const FURN_DEFS='<defs>'+
+  '<radialGradient id="fHi" cx="0.32" cy="0.28" r="0.85"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset="0.6" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".10"/></radialGradient>'+
+  '<linearGradient id="fSh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".24"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>'+
+  '</defs>'; // fHi＝左上亮、邊緣暗（鼓起來的感覺）；fSh＝上亮下暗。兩個都是半透明黑白，疊在任何顏色上都能用
+const _shade={};
+function shade(hex,t){ // t>0 變亮（混白）、t<0 變暗（混黑），t 在 -1～1
+  const k=hex+'|'+t; if(_shade[k])return _shade[k];
+  const m=/^#?([0-9a-f]{6})$/i.exec(hex); if(!m)return hex;
+  const v=parseInt(m[1],16),a=Math.abs(t),to=t>0?255:0;
+  return _shade[k]='#'+[16,8,0].map(s=>{const c=(v>>s)&255;return Math.round(c+(to-c)*a).toString(16).padStart(2,'0');}).join('');
+}
+const f1=v=>Math.round(v*10)/10, clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function fr(x,y,w,h,r,fill,extra){ // 圓角長方形
+  if(!(w>0)||!(h>0))return '';
+  return '<rect x="'+f1(x)+'" y="'+f1(y)+'" width="'+f1(w)+'" height="'+f1(h)+'" rx="'+f1(Math.max(0,Math.min(r,w/2,h/2)))+'" fill="'+fill+'"'+(extra?' '+extra:'')+'/>';
+}
+function fc(cx,cy,r,fill,extra){return r>0?'<circle cx="'+f1(cx)+'" cy="'+f1(cy)+'" r="'+f1(r)+'" fill="'+fill+'"'+(extra?' '+extra:'')+'/>':'';}
+function fe(cx,cy,rx,ry,fill,extra){return (rx>0&&ry>0)?'<ellipse cx="'+f1(cx)+'" cy="'+f1(cy)+'" rx="'+f1(rx)+'" ry="'+f1(ry)+'" fill="'+fill+'"'+(extra?' '+extra:'')+'/>':'';}
+function fl(x1,y1,x2,y2,stroke,extra){return '<line x1="'+f1(x1)+'" y1="'+f1(y1)+'" x2="'+f1(x2)+'" y2="'+f1(y2)+'" stroke="'+stroke+'" stroke-width="1"'+(extra?' '+extra:'')+'/>';}
+const OUT=c=>'stroke="'+c+'" stroke-width="1"';       // 外框線
+const hi=(x,y,w,h,r)=>fr(x,y,w,h,r,'url(#fHi)');      // 疊一層亮面
+const sh=(x,y,w,h,r)=>fr(x,y,w,h,r,'url(#fSh)');      // 疊一層上亮下暗
+
+function furnType(name){ // 照名稱分類。順序有意義：先比對比較明確的（床頭櫃要在床之前、電視櫃要在電視之前、洗手台要在「台」之前）
+  const n=String(name||'');
+  if(/神桌|神明|佛桌|供桌|神龕|祖先/.test(n))return 'altar';
+  if(/沙發/.test(n))return 'sofa';
+  if(/床頭櫃/.test(n))return 'cabinet';
+  if(/床/.test(n))return 'bed';
+  if(/電視櫃/.test(n))return 'tvstand';
+  if(/冰箱|冷凍/.test(n))return 'fridge';
+  if(/馬桶/.test(n))return 'toilet';
+  if(/浴缸/.test(n))return 'tub';
+  if(/洗衣機|烘衣機|烘乾機/.test(n))return 'washer';
+  if(/洗手|洗臉|面盆|臉盆|水槽|流理/.test(n))return 'basin';
+  if(/瓦斯爐|電磁爐|爐/.test(n))return 'stove';
+  if(/電視/.test(n))return 'tv';
+  if(/櫃|櫥|書架|層架/.test(n))return 'cabinet';
+  if(/椅|凳/.test(n))return 'chair';
+  if(/桌|几|檯|台/.test(n))return 'table';
+  return 'box';
+}
+const FURN_H={sofa:1,bed:.7,table:.9,altar:1.3,chair:.8,cabinet:1.8,tvstand:.9,tv:.4,fridge:2,toilet:.6,tub:.6,washer:1.3,basin:1,stove:1,box:1}; // 大概多高，只用來決定影子長短
+
+function fBox(W,D,c){ // 認不出來的家具：有厚度的方塊。靠牆那一邊畫深一點（沿用原本「深色那一邊＝靠背」的意思）
+  const x0=-W/2,y0=-D/2,e=clamp(Math.min(W,D)*0.08,2,5),bk=clamp(D*0.16,3,12);
+  return fr(x0,y0,W,D,3,shade(c,-.3),OUT(shade(c,-.55)))+fr(x0+e,y0+e,W-2*e,D-2*e,2,c)
+        +fr(x0+e,y0+e,W-2*e,bk,2,shade(c,-.2))+hi(x0+e,y0+e,W-2*e,D-2*e,2);
+}
+function fTable(W,D,c,glass){ // 桌面：外圈深色（厚度）、裡面桌面、沿長邊幾條木紋。glass＝茶几：中間嵌一塊玻璃
+  const x0=-W/2,y0=-D/2,e=clamp(Math.min(W,D)*0.05,1.5,3.5),r=clamp(Math.min(W,D)*0.06,2,5),g=shade(c,-.18);
+  let s=fr(x0,y0,W,D,r,shade(c,-.32),OUT(shade(c,-.55)))+fr(x0+e,y0+e,W-2*e,D-2*e,r,c);
+  if(glass){
+    const m=clamp(Math.min(W,D)*0.14,5,10),gx=x0+e+m,gy=y0+e+m,gw=W-2*(e+m),gh=D-2*(e+m);
+    s+=hi(x0+e,y0+e,W-2*e,D-2*e,r)+fr(gx,gy,gw,gh,2,'#dff1f6','fill-opacity=".8" '+OUT(shade(c,-.45)));
+    if(gw>12&&gh>8){const q=Math.min(gw,gh);s+=fl(gx+gw*0.12,gy+q*0.55,gx+gw*0.12+q*0.4,gy+q*0.15,'#ffffff','stroke-opacity=".9"')+fl(gx+gw*0.2,gy+q*0.7,gx+gw*0.2+q*0.5,gy+q*0.2,'#ffffff','stroke-opacity=".7"');}
+    return s;
+  }
+  const n=clamp(Math.round(Math.min(W,D)/14),2,6);
+  for(let i=1;i<=n;i++){
+    if(W>=D){const y=y0+e+(D-2*e)*i/(n+1);s+=fl(x0+e+3,y,x0+W-e-3,y,g,'stroke-opacity=".5"');}
+    else{const x=x0+e+(W-2*e)*i/(n+1);s+=fl(x,y0+e+3,x,y0+D-e-3,g,'stroke-opacity=".5"');}
+  }
+  return s+hi(x0+e,y0+e,W-2*e,D-2*e,r);
+}
+function fAltar(W,D,c){ // 神桌：桌面＋靠牆那排（放神像的位置）＋金邊＋香爐、一對燭台、三杯茶
+  const x0=-W/2,y0=-D/2,e=clamp(Math.min(W,D)*0.05,1.5,3.5);
+  let s=fTable(W,D,c);
+  s+=fr(x0+e,y0+e,W-2*e,clamp(D*0.22,5,14),2,shade(c,-.34));
+  s+=fr(x0+e+2,y0+e+2,W-2*e-4,D-2*e-4,2,'none','stroke="#e0b030" stroke-width="1" stroke-opacity=".85"');
+  const br=clamp(Math.min(W,D)*0.13,4,9),by=D*0.10;
+  s+=fc(0.6,by+0.9,br,'#000','fill-opacity=".22"')+fc(0,by,br,'#b8891b',OUT('#6b4e0c'))+fc(0,by,br*0.62,'#5d4a2a')+fc(-br*0.45,by-br*0.45,br*0.2,'#f1dc9a','fill-opacity=".9"');
+  for(const k of [-1,0,1])s+=fc(k*br*0.26,by,0.9,'#d2452f');
+  const cr=clamp(br*0.55,2.5,5);
+  for(const k of [-1,1])s+=fc(k*W*0.32+0.5,by+0.8,cr,'#000','fill-opacity=".2"')+fc(k*W*0.32,by,cr,'#c0392b',OUT('#7b1f15'))+fc(k*W*0.32,by,cr*0.4,'#ffd866');
+  const ty=Math.min(D/2-e-4,by+br+5),tr=clamp(br*0.28,1.6,2.6);
+  if(ty>by+br+1)for(const k of [-1,0,1])s+=fc(k*clamp(br*0.9,5,9),ty,tr,'#ffffff',OUT('#b9b29d'))+fc(k*clamp(br*0.9,5,9),ty,tr*0.55,'#b5793a');
+  return s;
+}
+function fSofa(W,D,c,name){ // 沙發：底座、椅背、兩邊扶手、坐墊（幾人座就幾塊）、靠枕
+  const x0=-W/2,y0=-D/2,arm=clamp(W*0.09,9,20),bk=clamp(D*0.25,12,24),ln=shade(c,-.42);
+  const n=/三人/.test(name)?3:/雙人|兩人|二人/.test(name)?2:/單人/.test(name)?1:Math.max(1,Math.round((W-2*arm)/62));
+  let s=fr(x0,y0,W,D,7,shade(c,-.32),OUT(shade(c,-.55)));
+  s+=fr(x0+1.5,y0+1.5,W-3,bk,6,shade(c,-.1),OUT(ln))+sh(x0+1.5,y0+1.5,W-3,bk,6);
+  const ay=y0+bk*0.55,ah=D-bk*0.55-1.5;
+  for(const ax of [x0+1.5,x0+W-1.5-arm])s+=fr(ax,ay,arm,ah,5,shade(c,-.04),OUT(ln))+hi(ax,ay,arm,ah,5);
+  const sx=x0+arm+3,sw=W-2*(arm+3),sy=y0+bk+1.5,shh=D-bk-4,gap=1.5,cw=(sw-gap*(n-1))/n;
+  for(let i=0;i<n;i++){const cx=sx+i*(cw+gap);s+=fr(cx,sy,cw,shh,5,shade(c,.18),OUT(ln))+hi(cx,sy,cw,shh,5);}
+  for(let i=0;i<n;i++){const cx=sx+i*(cw+gap)+cw*0.07,cy=y0+bk*0.4,chh=bk*0.72;s+=fr(cx,cy+1.2,cw*0.86,chh,4,'#000','fill-opacity=".15"')+fr(cx,cy,cw*0.86,chh,4,shade(c,.08),OUT(ln))+sh(cx,cy,cw*0.86,chh,4);}
+  return s;
+}
+function fBed(W,D,c){ // 床：床架、床頭板、床墊、枕頭（夠寬就兩顆）、被子與反摺的那一截
+  const x0=-W/2,y0=-D/2,hd=clamp(D*0.045,5,10);
+  let s=fr(x0,y0,W,D,4,shade(c,-.4),OUT(shade(c,-.62)));
+  s+=fr(x0,y0,W,hd,3,shade(c,-.55))+sh(x0,y0,W,hd,3);
+  const mx=x0+2,my=y0+hd+0.5,mw=W-4,mh=D-hd-2.5;
+  s+=fr(mx,my,mw,mh,5,'#f6f3ec',OUT('#cfc8b8'));
+  const np=W>=130?2:1,pg=clamp(W*0.04,4,8),ph=clamp(D*0.2,26,44),pw=Math.min((mw-pg*(np+1))/np,78),tot=np*pw+(np-1)*pg,py=my+5;
+  for(let i=0;i<np;i++){const px=-tot/2+i*(pw+pg);s+=fr(px+1,py+1.6,pw,ph,9,'#000','fill-opacity=".13"')+fr(px,py,pw,ph,9,'#ffffff',OUT('#c9c3b4'))+sh(px,py,pw,ph,9);}
+  const by=py+ph+clamp(D*0.03,4,8),bh=y0+D-2-by,fold=clamp(D*0.08,9,16);
+  if(bh>12){
+    s+=fr(mx,by,mw,bh,5,c,OUT(shade(c,-.38)))+hi(mx,by,mw,bh,5);
+    s+=fr(mx,by,mw,fold,4,shade(c,.5),OUT(shade(c,-.28)));
+    for(const t of [0.3,0.64])s+='<path d="M'+f1(mx+mw*0.08)+' '+f1(by+fold+(bh-fold)*t)+' q'+f1(mw*0.21)+' '+f1(bh*0.04)+' '+f1(mw*0.42)+' 0 t'+f1(mw*0.42)+' 0" fill="none" stroke="'+shade(c,-.24)+'" stroke-width="1" stroke-opacity=".55"/>';
+  }
+  return s;
+}
+function fChair(W,D,c){ // 椅子：四支腳、椅面、椅背
+  const x0=-W/2,y0=-D/2,bk=clamp(D*0.2,5,10),lg=clamp(Math.min(W,D)*0.12,3,5),dk=shade(c,-.5);
+  let s='';
+  for(const q of [[x0,y0],[x0+W-lg,y0],[x0,y0+D-lg],[x0+W-lg,y0+D-lg]])s+=fr(q[0],q[1],lg,lg,1,dk);
+  s+=fr(x0+1.5,y0+bk*0.6,W-3,D-bk*0.6-1.5,6,shade(c,.1),OUT(shade(c,-.42)))+hi(x0+1.5,y0+bk*0.6,W-3,D-bk*0.6-1.5,6);
+  return s+fr(x0+0.5,y0,W-1,bk,3,shade(c,-.28),OUT(dk))+sh(x0+0.5,y0,W-1,bk,3);
+}
+function fCabinet(W,D,c){ // 櫃子：櫃身、櫃頂、正面那排門片（每 50 公分左右一扇）與把手
+  const x0=-W/2,y0=-D/2,ft=clamp(D*0.14,3,7),bk=clamp(D*0.08,2,5),dk=shade(c,-.5);
+  let s=fr(x0,y0,W,D,2,shade(c,-.32),OUT(dk));
+  s+=fr(x0+1.5,y0+bk,W-3,D-bk-ft,1.5,shade(c,.1))+hi(x0+1.5,y0+bk,W-3,D-bk-ft,1.5);
+  s+=fr(x0+0.5,y0+D-ft,W-1,ft-0.5,1,shade(c,-.12),OUT(shade(c,-.46)));
+  const n=clamp(Math.round(W/50),1,8),dw=(W-1)/n;
+  for(let i=0;i<n;i++){
+    if(i>0)s+=fl(x0+0.5+i*dw,y0+D-ft,x0+0.5+i*dw,y0+D-0.5,dk);
+    const hx=n===1?-1.5:x0+0.5+i*dw+(i%2===0?dw-5.5:2.5); // 把手：兩扇一組對開，靠中間那條縫
+    s+=fr(hx,y0+D-ft*0.68,3,ft*0.36,0.6,shade(c,-.65));
+  }
+  return s;
+}
+function fTV(W,D,cx,cy,tw,td){ // 電視（從上面看是一條黑的，正面那邊一條藍色反光）
+  return fr(cx-tw*0.1,cy-td*0.2,tw*0.2,td*1.9,1.2,'#3b4650')+fr(cx-tw/2,cy,tw,td,1,'#161b20',OUT('#000'))+fl(cx-tw/2+2,cy+td-0.7,cx+tw/2-2,cy+td-0.7,'#6aa0ff','stroke-opacity=".75"');
+}
+function fTvStand(W,D,c){return fCabinet(W,D,c)+fTV(W,D,0,-D/2+D*0.28,Math.min(W*0.72,150),clamp(D*0.12,3,5));}
+function fTvOnly(W,D,c){const x0=-W/2,y0=-D/2;return fr(x0,y0,W,D,1.5,'#161b20',OUT('#000'))+fl(x0+2,y0+D-0.8,x0+W-2,y0+D-0.8,'#6aa0ff','stroke-opacity=".75"')+sh(x0,y0,W,D,1.5);}
+function fFridge(W,D,c){ // 冰箱：機身、頂面、後面的散熱孔、正面的門與把手
+  const x0=-W/2,y0=-D/2,dr=clamp(D*0.1,4,7),dk=shade(c,-.46);
+  let s=fr(x0,y0,W,D,5,shade(c,-.24),OUT(dk));
+  s+=fr(x0+1.5,y0+1.5,W-3,D-dr-2,4,shade(c,.3))+hi(x0+1.5,y0+1.5,W-3,D-dr-2,4);
+  for(let i=0;i<4;i++)s+=fl(x0+W*0.3+i*W*0.13,y0+3,x0+W*0.3+i*W*0.13,y0+clamp(D*0.12,5,9),dk,'stroke-opacity=".45"');
+  s+=fr(x0+0.5,y0+D-dr,W-1,dr-0.5,2,shade(c,.08),OUT(dk))+sh(x0+0.5,y0+D-dr,W-1,dr-0.5,2);
+  return s+fr(x0+W*0.1,y0+D-dr*0.72,clamp(W*0.09,3,6),dr*0.42,0.8,shade(c,-.6));
+}
+function fToilet(W,D){ // 馬桶：水箱、沖水鈕、馬桶座、內圈、水
+  const x0=-W/2,y0=-D/2,tk=clamp(D*0.28,10,22),wt='#fbfbf9',ln='#aeb6bd';
+  let s=fr(x0+W*0.08,y0,W*0.84,tk,3,wt,OUT(ln))+sh(x0+W*0.08,y0,W*0.84,tk,3)+fr(-3,y0+tk*0.35,6,tk*0.3,1.2,'#cfd6dc');
+  const ry=(D-tk)/2+1,cy=y0+D-ry,rx=W*0.42;
+  s+=fe(0,cy,rx,ry,wt,OUT(ln))+fe(0,cy+ry*0.06,rx*0.68,ry*0.7,'#e8eef2',OUT('#c2cad1'))+fe(0,cy+ry*0.12,rx*0.4,ry*0.42,'#cfe6f3');
+  return s+fe(-rx*0.3,cy-ry*0.4,rx*0.22,ry*0.13,'#ffffff','fill-opacity=".8"');
+}
+function fTub(W,D){ // 浴缸：外緣、裡面、排水孔、龍頭
+  const x0=-W/2,y0=-D/2,e=clamp(Math.min(W,D)*0.1,4,8),r=Math.min(W,D)*0.3,lw=W>=D;
+  return fr(x0,y0,W,D,8,'#fbfbf9',OUT('#aeb6bd'))+fr(x0+e,y0+e,W-2*e,D-2*e,r,'#dcedf6',OUT('#b9c6cf'))+sh(x0+e,y0+e,W-2*e,D-2*e,r)
+        +fc(lw?x0+e+9:0,lw?0:y0+e+9,2,'#8a949c')+fr(lw?x0+1.2:-4,lw?-4:y0+1.2,lw?e-2:8,lw?8:e-2,1.5,'#c9d0d6',OUT('#9aa5b1'));
+}
+function fWasher(W,D){ // 洗衣機：機身、後面的操作面板、上面的圓蓋
+  const x0=-W/2,y0=-D/2,cp=clamp(D*0.16,6,11),r=Math.min(W,D-cp)*0.36,cy=y0+cp+(D-cp)/2+0.5;
+  return fr(x0,y0,W,D,4,'#eef1f3',OUT('#9aa5b1'))+hi(x0,y0,W,D,4)+fr(x0+1.5,y0+1.5,W-3,cp,2.5,'#cfd6dc')+fc(x0+W*0.2,y0+1.5+cp/2,cp*0.28,'#7b8794')+fr(x0+W*0.52,y0+1.5+cp*0.3,W*0.32,cp*0.4,1,'#52606d')
+        +fc(0,cy,r,'#dfe5ea',OUT('#8f9aa5'))+fc(0,cy,r*0.72,'#9fb7c9',OUT('#6f8394'))+fc(-r*0.26,cy-r*0.26,r*0.2,'#ffffff','fill-opacity=".65"');
+}
+function fBasin(W,D,c){ // 洗手台／水槽：檯面、橢圓的盆、排水孔、龍頭
+  const x0=-W/2,y0=-D/2,rx=Math.min(W*0.34,26),ry=Math.min(D*0.3,20),cy=D*0.07,fh=clamp(D*0.12,4,8);
+  return fr(x0,y0,W,D,3,shade(c,-.26),OUT(shade(c,-.5)))+fr(x0+1.5,y0+1.5,W-3,D-3,2.5,shade(c,.2))+hi(x0+1.5,y0+1.5,W-3,D-3,2.5)
+        +fe(0,cy,rx,ry,'#fbfbf9',OUT('#aeb6bd'))+fe(0,cy+ry*0.08,rx*0.78,ry*0.74,'#e1ecf2')+fc(0,cy+ry*0.1,1.6,'#7b8794')
+        +fr(-1.8,cy-ry-fh,3.6,fh+ry*0.35,1.5,'#b7c0c8',OUT('#8f9aa5'));
+}
+function fStove(W,D){ // 爐台：黑色檯面、爐口（寬度夠就多幾口）、前面的旋鈕
+  const x0=-W/2,y0=-D/2,n=W>=90?3:W>=50?2:1,r=Math.min(W/(n*2.6),D*0.3);
+  let s=fr(x0,y0,W,D,3,'#2b3138',OUT('#111111'))+fr(x0+2,y0+2,W-4,D-4,2,'#3a424b')+sh(x0+2,y0+2,W-4,D-4,2);
+  for(let i=0;i<n;i++){const cx=x0+W*(i+0.5)/n;s+=fc(cx,-D*0.06,r,'#1b1f24',OUT('#6b7580'))+fc(cx,-D*0.06,r*0.55,'#4b5560')+fc(cx,-D*0.06,r*0.2,'#9aa5b1')+fc(cx,y0+D-clamp(D*0.12,4,7),clamp(D*0.05,1.5,2.5),'#cfd6dc');}
+  return s;
+}
+function furnBody(t,W,D,c,name){
+  switch(t){
+    case 'altar':return fAltar(W,D,c);   case 'sofa':return fSofa(W,D,c,name); case 'bed':return fBed(W,D,c);
+    case 'table':return fTable(W,D,c,/几/.test(name)); case 'chair':return fChair(W,D,c); case 'cabinet':return fCabinet(W,D,c);
+    case 'tvstand':return fTvStand(W,D,c); case 'tv':return fTvOnly(W,D,c);    case 'fridge':return fFridge(W,D,c);
+    case 'toilet':return fToilet(W,D);   case 'tub':return fTub(W,D);          case 'washer':return fWasher(W,D);
+    case 'basin':return fBasin(W,D,c);   case 'stove':return fStove(W,D);
+  }
+  return fBox(W,D,c);
+}
+function furnSVG(it,sel){ // 一件家具：先畫影子（畫面方向固定往右下，不跟著家具轉），再畫本體，選到的加藍框
+  const t=furnType(it.name),c=/^#[0-9a-f]{6}$/i.test(it.color)?it.color:'#cccccc',p=toS(it.x,it.y);
+  const W=it.w,D=it.d,tf=' rotate('+n1(it.rot+view.rot)+') scale('+view.s.toFixed(4)+')',box=' x="'+f1(-W/2)+'" y="'+f1(-D/2)+'" width="'+f1(W)+'" height="'+f1(D)+'"';
+  const k=(FURN_H[t]||1)*5*view.s; // 影子偏多少（畫面像素）：高度 × 5 公分 × 縮放
+  let h='';
+  for(const m of [1,0.5])h+='<rect transform="translate('+n1(p[0]+0.6*k*m)+' '+n1(p[1]+0.85*k*m)+')'+tf+'"'+box+' rx="3" fill="#000" fill-opacity=".13" pointer-events="none"/>';
+  return h+'<g class="furn" transform="translate('+n1(p[0])+' '+n1(p[1])+')'+tf+'">'
+          +'<rect'+box+' fill="#000" fill-opacity="0"/>'   // 透明底：整塊（含圓角缺的那一點點）都算點到家具，不會點穿到底下的尺寸數字
+          +furnBody(t,W,D,c,it.name)
+          +(sel?'<rect class="selbox"'+box+' rx="2"/>':'')+'</g>';
+}
+
 function render(){
-  raf=0; let h='';
+  raf=0; let h=FURN_DEFS;
   const b=G.bbox;
   if(opts.grid&&view.s*GRID>=5){ // 40×40 一格，從左上角 (0,0) 開始排
     const pad=GRID*2;
@@ -461,12 +670,17 @@ function render(){
   }
   for(const it of items){
     const sel=it.id===selId;
-    h+=poly(corners(it,-it.w/2,-it.d/2,it.w/2,it.d/2),'it'+(sel?' sel':''),'fill="'+esc(it.color)+'"');
-    const bd=Math.min(it.d*0.2,14);
-    h+=poly(corners(it,-it.w/2,-it.d/2,it.w/2,-it.d/2+bd),'back');
-    const c=toS(it.x,it.y);
-    h+='<text class="itxt" x="'+n1(c[0])+'" y="'+n1(c[1]-7)+'">'+esc(it.name)+'</text>';
-    h+='<text class="itxt" x="'+n1(c[0])+'" y="'+n1(c[1]+8)+'">'+it.w+'×'+it.d+'</text>';
+    h+=furnSVG(it,sel); // 2026-11-17 前是「單色方塊＋靠背那邊一條深色」，現在照名稱畫成細緻的俯視圖
+    if(!opts.labels)continue;
+    // 名稱與尺寸：字固定 12px 的話小家具整個被字蓋住，所以照家具在畫面上的大小把字縮小（最小 7.5px）；兩行放不下就只留名稱
+    const c=toS(it.x,it.y),e=ext(it),sw=(view.rot%180!==0),pw=2*(sw?e[1]:e[0])*view.s,ph=2*(sw?e[0]:e[1])*view.s; // pw,ph＝家具在畫面上佔的寬高（像素）
+    const sz=it.w+'×'+it.d;
+    let two=true,fs=12*Math.min(1,(pw-4)/Math.max(estW(it.name),estW(sz)),(ph-2)/27);
+    if(fs<8){two=false;fs=12*Math.min(1,(pw-4)/estW(it.name),(ph-2)/14);}
+    fs=Math.max(7.5,fs);
+    const st=' style="font-size:'+fs.toFixed(1)+'px;stroke-width:'+(fs/4).toFixed(1)+'px"';
+    h+='<text class="itxt"'+st+' x="'+n1(c[0])+'" y="'+n1(c[1]-(two?fs*0.58:0))+'">'+esc(it.name)+'</text>';
+    if(two)h+='<text class="itxt"'+st+' x="'+n1(c[0])+'" y="'+n1(c[1]+fs*0.67)+'">'+sz+'</text>';
   }
   const si=getSel();
   if(si&&opts.clear){
@@ -645,7 +859,59 @@ dimIn.addEventListener('keydown',e=>{
   else if(e.key==='Escape'){e.preventDefault();finishDimEdit(false);}
 });
 dimIn.addEventListener('blur',()=>finishDimEdit(true));
-svg.addEventListener('mousedown',e=>{if(dimKey(e))e.preventDefault();}); // 不讓點數字這一下把輸入框的游標搶走
+svg.addEventListener('mousedown',e=>{if(dimKey(e)||naming)e.preventDefault();}); // 不讓點數字這一下把輸入框的游標搶走（改名框剛跳出來時也一樣，見下面）
+
+/* ---- 連點兩下家具＝改名；右鍵（手機長按）＝旋轉／刪除。nate 2026-11-17：「連點兩下家具可改名 點右鍵可選轉或刪除」「旋轉」 ---- */
+const nameBox=$('#nameEdit'), nameIn=$('#nameEditIn'), menu=$('#ctxMenu');
+let naming=null;   // 正在改名的家具 {id,old}
+let lastTap=null;  // 上一次「點一下家具（沒拖）」{id,t}，兩次點同一件、間隔夠短＝連點兩下
+let lpTimer=0;     // 手機長按的計時器
+const DBL_MS=450, LONG_MS=550;
+function startNameEdit(it){
+  finishNameEdit(true); finishDimEdit(true); closeMenu();
+  const c=toS(it.x,it.y), sr=stage.getBoundingClientRect();
+  nameBox.style.left=Math.max(92,Math.min(sr.width-92,c[0]))+'px'; nameBox.style.top=Math.max(40,Math.min(sr.height-40,c[1]))+'px';
+  nameIn.value=it.name; nameBox.hidden=false; naming={id:it.id,old:it.name};
+  try{nameIn.focus();nameIn.select();}catch(_){}                       // 當場 focus，手機鍵盤才會跳
+  setTimeout(()=>{if(naming){nameIn.focus();nameIn.select();}},10);   // 滑鼠那一下放開後再補一次，免得游標被搶走
+}
+function finishNameEdit(ok){
+  if(!naming)return; const n=naming; naming=null; nameBox.hidden=true;
+  const it=items.find(i=>i.id===n.id); if(!it)return;
+  const v=nameIn.value.trim();
+  it.name=(ok&&v)?v:n.old;            // 取消、或清成空白＝維持原本的名稱
+  if(it.name!==n.old)commit();
+  refresh();
+}
+nameIn.addEventListener('input',()=>{if(!naming)return;const it=items.find(i=>i.id===naming.id);if(it){it.name=nameIn.value;renderList();fillForm();draw();}}); // 邊打邊看
+nameIn.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();finishNameEdit(true);}
+  else if(e.key==='Escape'){e.preventDefault();finishNameEdit(false);}
+});
+nameIn.addEventListener('blur',()=>finishNameEdit(true));
+nameBox.addEventListener('mousedown',e=>{if(e.target!==nameIn)e.preventDefault();});
+function openMenu(it,x,y){ // x,y＝圖上的畫面座標（滑鼠／手指的位置）
+  finishDimEdit(true); finishNameEdit(true); cancelLP();
+  if(selId!==it.id)select(it.id);
+  menu.hidden=false;
+  const sr=stage.getBoundingClientRect();
+  menu.style.left=Math.max(4,Math.min(sr.width-menu.offsetWidth-4,x))+'px'; menu.style.top=Math.max(4,Math.min(sr.height-menu.offsetHeight-4,y))+'px';
+}
+function closeMenu(){menu.hidden=true;}
+function cancelLP(){if(lpTimer){clearTimeout(lpTimer);lpTimer=0;}}
+menu.addEventListener('click',e=>{
+  const a=e.target.getAttribute&&e.target.getAttribute('data-a'); if(!a)return;
+  closeMenu();
+  if(a==='rotL')rotateSel(-90); else if(a==='rotR')rotateSel(90); else if(a==='del')delSel();
+});
+menu.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target))closeMenu();},true); // 點選單以外的地方＝關掉選單
+svg.addEventListener('contextmenu',e=>{
+  const p=loc(e),w=toW(p[0],p[1]),it=hit(w[0],w[1]);
+  if(!it)return;                 // 空白處不管，照瀏覽器原本的
+  e.preventDefault(); drag=null; lastTap=null;
+  openMenu(it,p[0],p[1]);
+});
 dimBox.addEventListener('mousedown',e=>{if(e.target!==dimIn)e.preventDefault();}); // 點到框裡的說明文字也不要搶走游標（手機點一下之後補發的滑鼠事件可能落在這裡，會讓框一開就關）
 
 /* ---- 兩指縮放（手機／觸控螢幕）。nate 2026-11-17：「我想用手機點網址就可以開」 ---- */
@@ -660,6 +926,7 @@ window.addEventListener('pointerup',touchGone,true); window.addEventListener('po
 
 svg.addEventListener('pointerdown',e=>{
   if(e.button!==undefined&&e.button>0)return;
+  finishNameEdit(true); cancelLP(); // 在圖上按下去＝改名框收起來（照目前打的字存）
   const touch=e.pointerType==='touch';
   if(touch){
     // 先把這根手指綁在整張圖上：手指底下的數字／線一重畫就會被換掉，不綁的話後面的移動會送到別的東西去（縮放會歪掉）
@@ -668,7 +935,7 @@ svg.addEventListener('pointerdown',e=>{
     if(touches.size>=2){
       if(touches.size===2){
         if(drag&&drag.type==='item'&&drag.moved)commit(); // 拖家具拖到一半放下第二指：家具停在目前位置
-        drag=null; pinch=pinchNow();
+        drag=null; lastTap=null; pinch=pinchNow();
       }
       return; // 第二指（以後）不當成點擊／拖曳
     }
@@ -685,7 +952,11 @@ svg.addEventListener('pointerdown',e=>{
   const it=dk?null:hit(w[0],w[1]);
   if(it){
     items=items.filter(i=>i!==it).concat([it]);
-    selId=it.id; drag={type:'item',it,ox:w[0]-it.x,oy:w[1]-it.y,moved:false}; refresh();
+    // px,py,tol：按下去的位置與「超過多少才算拖」。沒超過就當成點一下，家具不動（不然連點兩下改名時家具會被抖動推走）
+    selId=it.id; drag={type:'item',it,ox:w[0]-it.x,oy:w[1]-it.y,moved:false,px:p[0],py:p[1],tol:touch?8:3}; refresh();
+    if(touch)lpTimer=setTimeout(()=>{ // 手機沒有右鍵：按住不動一下＝跳出旋轉／刪除選單
+      lpTimer=0; if(drag&&drag.type==='item'&&drag.it===it&&!drag.moved){drag=null;lastTap=null;openMenu(it,p[0],p[1]);}
+    },LONG_MS);
   }else drag={type:'pan',px:p[0],py:p[1],cx:view.cx,cy:view.cy,moved:false,
               tol:touch?8:3,                                      // 手指點一下難免抖幾點，放寬一點才分得出「點」跟「拖」
               dk:dk||null,dkRect:dk?e.target.getBoundingClientRect():null}; // 手機按在數字上：先記下來，放開時沒拖才開改尺寸的框
@@ -704,6 +975,8 @@ svg.addEventListener('pointermove',e=>{
   if(measure.on){if(measure.a&&!measure.b){measure.hover=snapPoint(toW(p[0],p[1]));draw();}return;}
   if(!drag)return;
   if(drag.type==='item'){
+    if(!drag.moved&&Math.abs(p[0]-drag.px)+Math.abs(p[1]-drag.py)<=drag.tol)return; // 還沒超過門檻：算點、不算拖
+    cancelLP();
     const w=toW(p[0],p[1]); place(drag.it,w[0]-drag.ox,w[1]-drag.oy,e.altKey); drag.moved=true; fillForm(); draw();
   }else{
     const dx=p[0]-drag.px,dy=p[1]-drag.py; if(Math.abs(dx)+Math.abs(dy)>(drag.tol||3))drag.moved=true;
@@ -711,9 +984,17 @@ svg.addEventListener('pointermove',e=>{
   }
 });
 function endDrag(){
+  cancelLP();
   if(!drag)return;
   const d=drag; drag=null;
-  if(d.type==='item'){if(d.moved)commit();}
+  if(d.type==='item'){
+    if(d.moved){commit();lastTap=null;}
+    else{ // 點一下家具（沒拖）：跟上一次點的是同一件、間隔夠短＝連點兩下＝改名
+      const now=Date.now();
+      if(lastTap&&lastTap.id===d.it.id&&now-lastTap.t<DBL_MS){lastTap=null;startNameEdit(d.it);}
+      else lastTap={id:d.it.id,t:now};
+    }
+  }
   else if(!d.moved){
     if(d.dk){startDimEdit(d.dk,d.dkRect);try{dimIn.focus();}catch(_){}} // 手機：在數字上點一下（沒拖、沒放第二指）＝改尺寸；當場 focus 鍵盤才會跳出來
     else if(selId!==null)select(null);
@@ -725,7 +1006,7 @@ function zoomAt(px,py,f){
   const before=toW(px,py); view.s=Math.max(0.08,Math.min(12,view.s*f));
   const after=toW(px,py); view.cx+=before[0]-after[0]; view.cy+=before[1]-after[1]; draw();
 }
-svg.addEventListener('wheel',e=>{e.preventDefault();const p=loc(e);zoomAt(p[0],p[1],Math.exp(-e.deltaY*0.0015));},{passive:false});
+svg.addEventListener('wheel',e=>{e.preventDefault();closeMenu();finishNameEdit(true);const p=loc(e);zoomAt(p[0],p[1],Math.exp(-e.deltaY*0.0015));},{passive:false});
 
 /* ================= 按鈕 ================= */
 $('#bZoomIn').onclick=()=>zoomAt(cw/2,ch/2,1.25);
@@ -820,6 +1101,7 @@ $('#fColor').addEventListener('change',commit);
 $('#oGrid').onchange=e=>{opts.grid=e.target.checked;draw();};
 $('#oDims').onchange=e=>{opts.dims=e.target.checked;draw();};
 $('#oClear').onchange=e=>{opts.clear=e.target.checked;draw();};
+$('#oLabels').onchange=e=>{opts.labels=e.target.checked;draw();};
 $('#oMagnet').onchange=e=>{opts.magnet=e.target.checked;};
 $('#oSnap').onchange=e=>{opts.snap=parseFloat(e.target.value)||0;};
 
@@ -827,7 +1109,7 @@ document.addEventListener('keydown',e=>{
   const t=e.target.tagName; if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return;}
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='d'){e.preventDefault();dupSel();return;}
-  if(e.key==='Escape'){if(measure.on)$('#bMeasure').click();else select(null);return;}
+  if(e.key==='Escape'){if(!menu.hidden)closeMenu();else if(measure.on)$('#bMeasure').click();else select(null);return;}
   const it=getSel(); if(!it)return;
   const st=e.shiftKey?10:1, mv={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,-st],ArrowDown:[0,st]}[e.key];
   if(mv){e.preventDefault();const v=rotv(mv[0],mv[1],-view.rot);it.x+=v[0];it.y+=v[1];commit();refresh();}
