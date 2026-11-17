@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>房屋平面配置</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;font-size:14px;color:#1f2933;background:#f4f5f7}
+  #app{display:flex;height:100%}
+  #side{order:-1;width:310px;flex:none;overflow-y:auto;background:#fff;border-right:1px solid #d9dee4;padding:12px 14px 30px}
+  #stage{flex:1;position:relative;min-width:0;background:#fff}
+  #svg{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+  #svg.measuring{cursor:crosshair}
+  h1{font-size:17px;margin:2px 0 10px}
+  h2{font-size:13px;margin:16px 0 6px;color:#52606d;border-bottom:1px solid #e4e7eb;padding-bottom:3px}
+  .chips{display:flex;flex-wrap:wrap;gap:5px}
+  button{font:inherit;padding:4px 9px;border:1px solid #c5ccd3;border-radius:6px;background:#fff;cursor:pointer}
+  button:hover{background:#eef2f6}
+  button.on{background:#1f4f96;color:#fff;border-color:#1f4f96}
+  button.danger{color:#b42318;border-color:#e3b4ae}
+  .chips button small{color:#7b8794;margin-left:3px}
+  button.on small{color:#dbe7f7}
+  .my{display:inline-flex;align-items:stretch;border:1px solid #c5ccd3;border-radius:6px;overflow:hidden}
+  .my button{border:none;border-radius:0}
+  .my button.sw{width:10px;padding:0;cursor:default}
+  .my button.x{color:#b42318;padding:4px 7px;border-left:1px solid #e4e7eb}
+  label.row{display:flex;align-items:center;gap:6px;margin:4px 0}
+  label.row span{flex:none;width:118px;color:#3e4c59}
+  label.row input[type=number],label.row input[type=text]{flex:1;min-width:0;font:inherit;padding:3px 6px;border:1px solid #c5ccd3;border-radius:5px}
+  label.chk{display:flex;align-items:center;gap:6px;margin:3px 0}
+  #list{list-style:none;margin:0;padding:0}
+  #list li{display:flex;justify-content:space-between;gap:6px;padding:4px 6px;border-radius:5px;cursor:pointer}
+  #list li:hover{background:#eef2f6}
+  #list li.sel{background:#dbe7f7}
+  #list li small{color:#7b8794}
+  .muted{color:#7b8794;font-size:12.5px;line-height:1.5}
+  .warnTxt{color:#b42318}
+  details{margin-top:14px;border:1px solid #e4e7eb;border-radius:8px;padding:6px 10px}
+  summary{cursor:pointer;font-weight:600}
+  details h3{font-size:12.5px;margin:10px 0 2px;color:#52606d}
+  details ol{padding-left:20px;margin:6px 0;line-height:1.55;font-size:13px}
+  #tools{position:absolute;top:10px;right:10px;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+  #hud{position:absolute;left:12px;bottom:10px;font-size:12px;color:#52606d;pointer-events:none;background:rgba(255,255,255,.85);padding:4px 8px;border-radius:6px}
+  #bar{height:6px;border:1.5px solid #52606d;border-top:none;margin-bottom:2px}
+  .wall{stroke:#1f2933;stroke-width:3;stroke-linecap:square}
+  .dash{stroke:#9aa5b1;stroke-width:1.5;stroke-dasharray:6 5}
+  .col{fill:#5b6570;stroke:#1f2933;stroke-width:1}
+  .door{stroke:#e08a00;stroke-width:4}
+  .grid{stroke:#e3e7ec;stroke-width:1}
+  .dim line{stroke:#6b8fc7;stroke-width:1}
+  .dim text,.lbl{fill:#1f4f96;font-size:12px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+  .dim.warn text,.lbl.warn{fill:#c62828;font-weight:700}
+  .lbl.gray{fill:#7b8794;pointer-events:none} /* 房間名稱不擋點擊：手機上圖縮很小時名稱會疊到尺寸數字，數字要點得到 */
+  .lbl tspan[data-k]{fill:#1f4f96}
+  .dim.sum text{fill:#7b8794;font-style:italic}
+  .dim.sum line{stroke:#b8c2cc}
+  #svg [data-k]{cursor:pointer}
+  #svg text[data-k]:hover,#svg tspan[data-k]:hover{fill:#d6336c;text-decoration:underline}
+  #dimEdit{position:absolute;z-index:5;transform:translate(-50%,-50%);background:#fff;border:2px solid #0b5fff;border-radius:8px;padding:6px 8px;box-shadow:0 4px 14px rgba(0,0,0,.22);display:flex;flex-direction:column;gap:3px;align-items:center}
+  #dimEdit[hidden]{display:none}
+  #dimEdit span{font-size:12px;color:#52606d;white-space:nowrap}
+  #dimEdit input{width:92px;font:inherit;font-size:16px;text-align:center;padding:2px 4px;border:1px solid #c5ccd3;border-radius:5px}
+  .it{stroke:#44505c;stroke-width:1.2;fill-opacity:.82}
+  .it.sel{stroke:#0b5fff;stroke-width:2.5}
+  .back{fill:#000;fill-opacity:.28;stroke:none}
+  .itxt{font-size:12px;text-anchor:middle;dominant-baseline:central;fill:#111;paint-order:stroke;stroke:rgba(255,255,255,.75);stroke-width:2.5px;pointer-events:none}
+  .clr line{stroke:#0b9e6f;stroke-width:1.2;stroke-dasharray:3 3}
+  .clr text{font-size:12px;fill:#08724f;font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#fff;stroke-width:3px}
+  .ms line{stroke:#d6336c;stroke-width:2}
+  .ms circle{fill:#d6336c}
+  .ms text{font-size:13px;fill:#a61e4d;font-weight:700;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:3.5px}
+  @media (max-width:820px){
+    html,body{height:auto}
+    #app{flex-direction:column;height:auto}
+    #stage{height:72vh;flex:none}
+    #side{order:0;width:auto;border-right:none;border-top:1px solid #d9dee4;overflow:visible}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <main id="stage">
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="tools">
+      <button id="bMeasure" title="點兩下量任意兩點距離">量距離</button>
+      <button id="bZoomIn">＋</button>
+      <button id="bZoomOut">－</button>
+      <button id="bFit">全圖</button>
+      <button id="bRot" title="整張圖轉 90 度看">轉向</button>
+    </div>
+    <div id="dimEdit" hidden><span id="dimEditName"></span><input id="dimEditIn" type="number" min="0" step="1"><span>Enter 確定｜Esc 取消</span></div>
+    <div id="hud"><div id="bar"></div><span id="barTxt"></span>　點圖上的數字＝改尺寸｜拖家具＝移動｜拖空白＝平移｜滾輪／兩指＝縮放</div>
+  </main>
+  <aside id="side">
+    <h1>房屋平面配置 <small class="muted">單位：公分</small></h1>
+
+    <h2>自己新增家具</h2>
+    <div id="newForm">
+      <label class="row"><span>名稱</span><input id="nName" type="text" placeholder="例如：L 型沙發"></label>
+      <label class="row"><span>寬（公分）</span><input id="nW" type="number" min="1" step="1" value="100"></label>
+      <label class="row"><span>深（公分）</span><input id="nD" type="number" min="1" step="1" value="60"></label>
+      <label class="row"><span>顏色</span><input id="nColor" type="color" value="#f2b5a0"></label>
+      <label class="chk"><input type="checkbox" id="nKeep" checked>存成按鈕，下次直接點</label>
+      <div class="chips" style="margin-top:4px"><button id="bNew" class="on">放進圖裡</button></div>
+      <div id="nMsg" class="muted warnTxt" style="margin-top:4px"></div>
+    </div>
+
+    <div id="myBox" hidden>
+      <h2>我的家具 <small class="muted">（點 × 刪掉按鈕，圖上的不會被刪）</small></h2>
+      <div id="myPresets" class="chips"></div>
+    </div>
+
+    <h2>常用家具（點了會出現在畫面中央）</h2>
+    <div id="presets" class="chips"></div>
+
+    <h2>選到的家具</h2>
+    <div id="noSel" class="muted">點一下圖上的家具，就能在這裡改名稱和尺寸。</div>
+    <div id="selForm" hidden>
+      <label class="row"><span>名稱</span><input id="fName" type="text"></label>
+      <label class="row"><span>寬（公分）</span><input id="fW" type="number" min="1" step="1"></label>
+      <label class="row"><span>深（公分）</span><input id="fD" type="number" min="1" step="1"></label>
+      <label class="row"><span>角度</span><input id="fRot" type="number" step="5"></label>
+      <label class="row"><span>離左邊的牆</span><input id="fX" type="number" step="1"></label>
+      <label class="row"><span>離上面的牆</span><input id="fY" type="number" step="1"></label>
+      <label class="row"><span>顏色</span><input id="fColor" type="color"></label>
+      <div class="chips" style="margin-top:6px">
+        <button id="bRotL">↺ 轉 90°</button>
+        <button id="bRotR">↻ 轉 90°</button>
+        <button id="bDup">複製一個</button>
+        <button id="bKeep">存成按鈕</button>
+        <button id="bDel" class="danger">刪除</button>
+      </div>
+      <div class="muted" style="margin-top:6px">深色那一邊＝靠背／靠牆面。方向鍵微調 1 公分（按住 Shift 是 10 公分）、R 旋轉、Delete 刪除。</div>
+    </div>
+
+    <h2>家具清單</h2>
+    <ul id="list"></ul>
+    <div id="listEmpty" class="muted">還沒有家具。</div>
+
+    <h2>顯示與吸附</h2>
+    <label class="chk"><input type="checkbox" id="oGrid" checked>格線（40×40 公分一格）</label>
+    <label class="chk"><input type="checkbox" id="oDims" checked>牆面尺寸標註</label>
+    <label class="chk"><input type="checkbox" id="oClear" checked>選到的家具顯示離牆距離</label>
+    <label class="chk"><input type="checkbox" id="oMagnet" checked>靠近牆自動貼齊</label>
+    <label class="row"><span>移動單位</span>
+      <select id="oSnap" style="flex:1;font:inherit;padding:3px"><option value="1" selected>1 公分</option><option value="5">5 公分</option><option value="10">10 公分</option><option value="0">不限</option></select>
+    </label>
+
+    <h2>檔案</h2>
+    <div class="chips">
+      <button id="bSave">存檔</button>
+      <button id="bOpen">開啟存檔</button>
+      <button id="bUndo">復原（Ctrl+Z）</button>
+      <button id="bClear" class="danger">清空家具</button>
+    </div>
+    <input id="fileIn" type="file" accept=".json,application/json" hidden>
+    <div class="muted" style="margin-top:6px">關掉視窗家具位置不會自動留著：關之前按「存檔」會下載一個 .json，下次按「開啟存檔」選它。「我的家具」按鈕會記在這台電腦的瀏覽器裡，也會一起存進 .json。</div>
+
+    <details id="planBox">
+      <summary>空間尺寸總表（也可以直接點圖上的數字改）</summary>
+      <div id="planSum" class="muted" style="margin:8px 0"></div>
+      <div id="planForm"></div>
+      <div class="chips" style="margin:8px 0 4px"><button id="bPlanReset">還原成手繪圖的數字</button></div>
+    </details>
+
+    <details open>
+      <summary>待確認（照手繪圖讀不準的地方）</summary>
+      <ol>
+        <li>圖上<b>紅字加問號</b>＝我從照片讀不準、還沒跟你確認的數字。你確認過的就不會有問號。</li>
+        <li>上半部左邊 48+343+49+230＝670、右邊 390+62+220＝672，差 2，照你寫的數字畫。</li>
+        <li>左下那段手繪圖寫 263，照你說的以中間直線 12×40+12＝<b>492</b> 為準，改成 <b>143</b>（492−303−46）。</li>
+        <li>總寬：上牆 45+317+80+92＝534，下牆 46+209+牆厚 19+235+25＝534，對得上（照你說的總寬不動，中間那道牆厚 21 改 19）。</li>
+        <li>那兩間房間照你說的都是 165 寬（原本 125；手繪圖其中一間寫 120）。改其中一個 165，另一個會跟著變。</li>
+        <li>隔間上兩個門照你說的都是 80（原本 78）。右邊房間的門是算出來的（235+25−180），所以下牆那段從 233 變成 <b>235</b>，180 那段不動。</li>
+        <li>大門 118 在 390 那道牆、靠 92 那一角（我畫成從牆角開始，如果離牆角還有一段請告訴我）。上牆的 80 是通往廚房的門。</li>
+      </ol>
+    </details>
+  </aside>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const svg=$('#svg'), stage=$('#stage');
+
+/* ================= 空間尺寸（照手繪圖，單位公分） ================= */
+const DEFAULT_PLAN={
+  c1w:45,c1h:48,top1:317,door:80,top2:92,doorE:118,kitW:255,balL:127,
+  l1:343,c3w:45,c3h:49,l230:230,
+  r1:390,c2d:24,c2l:62,r2:220,
+  wallT:15,seg180:180,doorL:80, // 2026-11-17 nate：「中間的兩個們都是80」「所以左下是235」→ 左門 78→80；右門＝bA+25−180，所以 bA 233→235，180 那段不動
+  l263:143,s125:165,l303:303,c4w:46,c4h:46,b209:209,divT:19,bA:235,c5w:25,c5h:50 // divT 21→19：nate 2026-11-17「總寬別動 縮一下左邊中間的牆壁21 改19」（233→235 多的 2 從牆厚扣，總寬維持 534）
+};
+const PLAN_FIELDS=[
+  ['上半部（大門那一區）'],
+  ['c1w','左上柱　寬'],['c1h','左上柱　深'],['top1','317 那段'],['door','廚房門（80 那段）'],['top2','92 那段'],
+  ['doorE','大門寬（390 那道牆，靠 92 那一角）'],
+  ['廚房（接在 80+92 那面牆外面）'],
+  ['kitW','廚房寬（往外，陽台也一樣）'],['balL','陽台長（沿牆）'],
+  ['l1','左牆：兩柱之間'],['c3w','左中柱　寬'],['c3h','左中柱　深'],['s125','左邊兩間房間　寬'],['l230','左邊上面那間　深'],
+  ['r1','右牆：上段'],['c2d','右柱　凸出'],['c2l','右柱　長'],['r2','右牆：下段'],
+  ['隔間'],
+  ['wallT','隔間厚'],['seg180','隔間右段長（右邊房間門的右邊）'],['doorL','左邊房間的門寬'],
+  ['下半部'],
+  ['l263','左邊下面那間　深（手繪圖原寫 263）'],['l303','左牆（下面那間以下）'],['c4w','左下柱　寬'],['c4h','左下柱　深'],
+  ['b209','下牆：柱→中間那道牆'],['divT','中間那道牆　厚度'],['bA','下牆：中間那道牆→右下柱'],['c5w','右下柱　寬（橫）'],['c5h','右下柱　深（直，左側）']
+];
+// 2026-11-17 以前的預設值（那時的存檔沒有記「存檔當時的預設值」，開那種舊存檔時拿這份來比，見 restore）。這份不要改。
+const PLAN_BASE_V1={
+  c1w:45,c1h:48,top1:317,door:80,top2:92,doorE:118,kitW:255,balL:127,
+  l1:343,c3w:45,c3h:49,l230:230,
+  r1:390,c2d:24,c2l:62,r2:220,
+  wallT:15,seg180:180,doorL:78,
+  l263:143,s125:125,l303:303,c4w:46,c4h:46,b209:209,divT:21,bA:233,c5w:25,c5h:50
+};
+const TILE_NOTE=492; // 手繪圖中間直線寫 12×40+12
+const GRID=40;       // 背景格線一格幾公分（nate：「底下的格子幫我弄成40*40一格」）
+
+function geom(p){
+  // 整間是一個長方形（nate 2026-11-16：「整間是一個長方形」「上半部的右邊是對齊下方最右邊的」）
+  // 總寬以下牆為準：下牆 46｜209｜中間那道牆厚 19（2026-11-17 前是 21）｜235（2026-11-17 前是 233）｜柱 25 每一段 nate 都確認過是頂到線／頂到牆的
+  //（「下面209是到中間那條線」「58是到最右邊…25是那個柱子」「下面200跟33直接畫一起 變233」），中間不可以塞差額。
+  // 上牆的數字合計跟下牆不一樣時，上牆照寫的數字畫，差多少用紅字標在上牆那邊，不去動 nate 寫的數字。
+  const r=v=>Math.round(v*10)/10;
+  const topSum=p.c1w+p.top1+p.door+p.top2;
+  const botSum=p.c4w+p.b209+p.divT+p.bA+p.c5w; // 含中間那道牆的厚度（nate：「下面房間中間那道 492的牆 厚度21」；2026-11-17 改 19）
+  const W=botSum;
+  const xD0=p.c1w+p.top1, xD1=xD0+p.door;
+  const yM0=p.c1h+p.l1, yM1=yM0+p.c3h;
+  const yL=yM1+p.l230, yR=p.r1+p.c2l+p.r2;
+  // 左邊兩間房間一樣寬，共用 s125（nate：「一個120寬 一個125 應該都要依樣才對 把兩邊都改125」）
+  // 2026-11-17 改成 165（nate：「上面那兩間125改成165」）。參數名稱 s125 不改，改了舊的 .json 存檔會讀不到
+  const xS=p.s125, xS2=p.s125;      // 上面那間、下面那間的右牆位置
+  const yC=Math.max(yL,yR)+p.wallT;
+  const y125=yC+p.l263, yK=y125+p.l303, yBot=yK+p.c4h;
+  const xDiv=p.c4w+p.b209;          // 中間那道牆：209 那段直接接到這條線
+  const xDiv2=xDiv+p.divT;          // 中間那道牆的右面（左面是 xDiv）
+  const xK=xDiv2+p.bA;              // 右下柱左緣（＝W−柱寬，柱貼著右牆）
+  const xB0=W-p.seg180;
+  // 隔間上有兩個門，都貼著中間那道牆（nate：「180左邊是個門…應該會是233+25-180」「那個門貼著的左邊也是另一個房間的門」）
+  const xDR=Math.max(xDiv2,xB0);            // 右邊房間的門：牆右面 xDiv2 → 180 那段的左端
+  const xDL=Math.max(xS,xDiv-p.doorL);      // 左邊房間的門：xDL → 牆左面 xDiv（nate：「門就是78 不要問號」；2026-11-17 兩個門都改 80，bA 跟著 233→235）
+  const walls=[],dashed=[],cols=[],dims=[],labels=[],doors=[];
+  const L=(a,x1,y1,x2,y2)=>a.push([x1,y1,x2,y2]);
+  // 外框：長方形（上牆中間留門）
+  // 大門在 390 那道牆、靠 92 那一角，寬 118（nate：「是在92的另一邊的390那道牆的最右邊 有一個118的大門」）
+  // 上牆的 80 是通往廚房的門（nate：「那個80 是通往廚房的門」）
+  const dE=Math.max(0,Math.min(p.doorE,p.r1));
+  const kD0=Math.min(xD0,W), kD1=Math.min(xD1,W);
+  L(walls,0,0,kD0,0); if(kD1<W)L(walls,kD1,0,W,0);
+  L(walls,0,0,0,yBot); L(walls,W,dE,W,yBot); L(walls,0,yBot,W,yBot);
+  // 裡面的線
+  L(walls,0,yM1,xS,yM1);
+  L(walls,xS,yM1,xS,yL);
+  // 隔間（15 厚，上下兩條線）：左段牆｜左邊房間的門｜中間那道牆｜右邊房間的門｜右段牆(180)
+  L(walls,xS,yL,xDL,yL); L(walls,xS,yL,xS,yC); if(xDL<xDiv)L(walls,xDL,yL,xDL,yC);
+  L(walls,xDiv,yL,xDiv2,yL);
+  L(walls,xB0,yR,W,yR); L(walls,xB0,yR,xB0,yC);
+  L(walls,0,yC,xDL,yC); L(walls,xDiv,yC,xDiv2,yC); L(walls,xDR,yC,W,yC);
+  if(dE>0)doors.push([W,0,W,dE]);                                    // 大門
+  if(kD1>kD0)doors.push([kD0,0,kD1,0]);                              // 廚房門
+  // 廚房：接在上牆 80+92 那段外面（nate：「右邊那邊接一個255寬的廚房 長度就是那個92+80」）
+  // 沿牆從廚房門左緣到牆角（長＝80+92，跟著那兩個數字變），往外 kitW；外側那面跟 390 那道牆在同一條線上
+  const kitL=kD0, kitR=W, kitT=-Math.max(0,p.kitW);
+  if(p.kitW>0&&kitR>kitL){
+    L(walls,kitL,0,kitL,kitT); L(walls,kitL,kitT,kitR,kitT); L(walls,kitR,kitT,kitR,0);
+  }
+  // 陽台：接在廚房旁邊（橫的畫面是廚房上面），沿主屋那面牆長 balL，往外跟廚房一樣寬
+  //（nate：「廚房上面再接一個127長的陽台」；往外多寬他沒說，先跟廚房同一條外牆線）
+  const balR=kitL, balL=Math.max(0,kitL-Math.max(0,p.balL));
+  const hasBal=p.kitW>0&&p.balL>0;
+  if(hasBal){ L(walls,balL,0,balL,kitT); L(walls,balL,kitT,balR,kitT); if(!(kitR>kitL))L(walls,balR,kitT,balR,0); }
+  if(xDL<xDiv)doors.push([xDL,yC,xDiv,yC]);                          // 左邊房間的門
+  if(xDR>xDiv2)doors.push([xDiv2,yC,xDR,yC]);                        // 右邊房間的門
+  L(walls,xS2,yC,xS2,y125);
+  L(walls,0,y125,xS2,y125);
+  L(walls,xDiv,yL,xDiv,yBot); if(p.divT>0.5)L(walls,xDiv2,yL,xDiv2,yBot); // 中間那道牆：有厚度，畫左右兩面
+  // 柱
+  cols.push({x:0,y:0,w:p.c1w,h:p.c1h,side:1,kw:'c1w',kh:'c1h'});
+  cols.push({x:0,y:yM0,w:p.c3w,h:p.c3h,side:1,kw:'c3w',kh:'c3h'});
+  cols.push({x:W-p.c2d,y:p.r1,w:p.c2d,h:p.c2l,side:-1,kw:'c2d',kh:'c2l'});
+  cols.push({x:0,y:yK,w:p.c4w,h:p.c4h,side:1,kw:'c4w',kh:'c4h'});
+  cols.push({x:xK,y:yBot-p.c5h,w:p.c5w,h:p.c5h,side:-1,kw:'c5w',kh:'c5h'});
+  // 尺寸標註（k＝點了可以改的那個參數；sum＝合計，不能直接改）
+  const D=(x1,y1,x2,y2,t,nx,ny,o)=>dims.push(Object.assign({x1,y1,x2,y2,t:String(t),nx,ny},o||{}));
+  D(0,0,p.c1w,0,p.c1w,0,-1,{k:'c1w'}); D(p.c1w,0,xD0,0,p.top1,0,-1,{k:'top1'});
+  D(xD0,0,xD1,0,'廚房門 '+p.door,0,-1,{k:'door'}); D(xD1,0,topSum,0,p.top2,0,-1,{k:'top2'});
+  if(dE>0)D(W,0,W,dE,'大門 '+r(dE),-1,0,{k:'doorE'});   // 標在牆的裡面，外面那排 390 不動
+  // 上牆合計跟總寬（下牆）不一樣：少的話在右上角補一段紅字「少 N?」；多的話最後一段的尺寸線會超出右牆，合計那行用紅字寫多多少
+  const tDiff=r(topSum-W);
+  if(tDiff<-0.5)D(topSum,0,W,0,'少 '+(-tDiff)+'?',0,-1,{warn:1});
+  // 上牆合計只在跟總寬對不起來時才標（對得上就不標，免得那條線穿過廚房）
+  if(Math.abs(tDiff)>0.5)D(0,0,topSum,0,'上牆數字合計 '+r(topSum)+(tDiff>0.5?'（比下牆多 '+tDiff+'?）':''),0,-1,{tier:1,warn:1});
+  // 廚房的尺寸：往外的寬（可點）、沿牆的長（＝80+92，算出來的）
+  if(p.kitW>0&&kitR>kitL){
+    D(kitR,kitT,kitR,0,p.kitW,1,0,{k:'kitW'});
+    D(kitL,kitT,kitR,kitT,r(kitR-kitL),0,-1,{sum:1});
+    labels.push({x:(kitL+kitR)/2,y:kitT/2,t:'廚房',gray:1,upright:1});
+  }
+  if(hasBal){
+    D(balL,kitT,balR,kitT,p.balL,0,-1,{k:'balL'});
+    labels.push({x:(balL+balR)/2,y:kitT/2,t:'陽台',gray:1,upright:1});
+  }
+  D(0,0,0,p.c1h,p.c1h,-1,0,{k:'c1h'}); D(0,p.c1h,0,yM0,p.l1,-1,0,{k:'l1'}); D(0,yM0,0,yM1,p.c3h,-1,0,{k:'c3h'});
+  D(W,0,W,p.r1,p.r1,1,0,{k:'r1'}); D(W,p.r1,W,p.r1+p.c2l,p.c2l,1,0,{k:'c2l'}); D(W,p.r1+p.c2l,W,yR,p.r2,1,0,{k:'r2'}); D(W,yC-p.wallT,W,yC,p.wallT,1,0,{k:'wallT'});
+  D(0,yM1,xS,yM1,p.s125,0,1,{k:'s125'}); D(xS,yM1,xS,yL,p.l230,-1,0,{k:'l230'});
+  // 柱子的長寬用尺寸線標（nate：「別直接寫45*49…標出來長寬」）。外圈那幾排已經有的不重複，這裡補外圈沒有的三個：
+  D(0,yM0,p.c3w,yM0,p.c3w,0,-1,{k:'c3w'});                 // 左中柱的寬
+  D(W-p.c2d,p.r1,W,p.r1,p.c2d,0,-1,{k:'c2d'});             // 右柱凸出來多少
+  D(xK,yBot-p.c5h,xK,yBot,p.c5h,-1,0,{k:'c5h'});           // 右下柱的深（左側那條邊）
+  D(xB0,yC,W,yC,p.seg180,0,1,{k:'seg180'});
+  if(xDR>xDiv2)D(xDiv2,yC,xDR,yC,'門 '+r(xDR-xDiv2),0,1,{k:'doorM'});            // 算出來的：bA+25−180（現在 235+25−180＝80）
+  if(xDL<xDiv)D(xDL,yC,xDiv,yC,'門 '+r(xDiv-xDL),0,1,{k:'doorL'});
+  D(xS2,yC,xS2,y125,p.l263,-1,0,{k:'l263'}); D(0,y125,xS2,y125,p.s125,0,-1,{k:'s125'});
+  D(0,y125,0,yK,p.l303,-1,0,{k:'l303'}); D(0,yK,0,yBot,p.c4h,-1,0,{k:'c4h'});
+  // 下牆：46｜209｜牆厚 19｜235｜柱 25，每段都頂到線／牆，沒有差額
+  D(0,yBot,p.c4w,yBot,p.c4w,0,1,{k:'c4w'}); D(p.c4w,yBot,xDiv,yBot,p.b209,0,1,{k:'b209'});
+  D(xDiv,yBot,xDiv2,yBot,p.divT,0,1,{k:'divT'});
+  D(xDiv2,yBot,xK,yBot,p.bA,0,1,{k:'bA'}); D(xK,yBot,W,yBot,p.c5w,0,1,{k:'c5w'});
+  D(0,yBot,W,yBot,'總寬 '+r(W),0,1,{tier:1,sum:1});
+  D(W,0,W,yBot,'總深 '+r(yBot),1,0,{tier:2,sum:1});
+  // 文字
+  const lowH=yBot-yC;
+  // 中間那道牆只標長度（nate：「你直接寫492就好 不要寫這麼多」）。點它改＝調整左下那段（l263），因為 nate 說那段要配合這個數字
+  labels.push({x:xDiv2,y:(yC+yBot)/2,parts:[[r(lowH),'lowH']],ang:-90,dx:11});
+  // 房間名稱（nate 2026-11-17：「幫我標一下 左下主臥 左上客臥 中間上面兩間都是廁所」——他講的方位是橫的畫面）
+  // 主臥＝中間那道牆右邊那間（橫的畫面左下）；客臥＝牆左邊那間扣掉廁所（左上）；廁所＝寬 s125 的那兩間（中間上面）
+  labels.push({x:(xDiv2+W)/2,y:(yC+yBot)/2,t:'主臥',gray:1,upright:1});
+  labels.push({x:xDiv/2,y:(y125+yBot)/2,t:'客臥',gray:1,upright:1});
+  // 廁所的字不放正中間：裡面有 165、230、143 三個尺寸標註，放正中間在直的畫面會疊到，所以往沒有標註的那個角偏一點
+  labels.push({x:xS*0.38,y:(yM1+yL)/2,t:'廁所',gray:1,upright:1});
+  labels.push({x:xS2*0.38,y:yC+(y125-yC)*0.38,t:'廁所',gray:1,upright:1});
+  // 給吸附、離牆距離用的所有線段
+  const segs=walls.concat(dashed,doors);
+  for(const c of cols){ segs.push([c.x,c.y,c.x+c.w,c.y],[c.x,c.y+c.h,c.x+c.w,c.y+c.h],[c.x,c.y,c.x,c.y+c.h],[c.x+c.w,c.y,c.x+c.w,c.y+c.h]); }
+  return {W,topSum,botSum,yL,yR,yC,xS,xS2,xDiv,xDiv2,xDL,xDR,xB0,xK,yBot,lowH,walls,dashed,cols,dims,labels,segs,
+          doors,house:{x0:0,y0:0,x1:W,y1:yBot},
+          bbox:{x0:0,y0:(p.kitW>0&&kitR>kitL)?kitT:0,x1:Math.max(W,topSum),y1:yBot}};
+}
+
+/* ================= 狀態 ================= */
+const PRESETS=[
+  ['三人沙發',210,90,'#8fb3d9'],['雙人沙發',150,90,'#8fb3d9'],['單人沙發',90,90,'#8fb3d9'],
+  ['茶几',110,60,'#c9a66b'],['電視櫃',180,40,'#b08968'],
+  ['餐桌',140,80,'#e0a458'],['餐椅',45,45,'#ecc994'],
+  ['雙人床',152,188,'#b7d3a8'],['單人床',106,188,'#b7d3a8'],
+  ['衣櫃',120,60,'#c3b1e1'],['書桌',120,60,'#c9a66b'],['冰箱',70,70,'#cfd8dc'],['鞋櫃',100,35,'#b08968'],
+  ['神桌',108,60,'#b5533c'] // nate 2026-11-17：「幫我把神桌加進去家具清單 尺寸108*60」
+];
+// 我的家具（nate：「我要可以自己新增家具」）：[名稱,寬,深,顏色]。存在瀏覽器（方便）＋存檔 .json（可靠）
+const MY_KEY='房屋平面配置_我的家具';
+let myPresets=[];
+let plan=Object.assign({},DEFAULT_PLAN), G=geom(plan);
+let items=[], selId=null, nextId=1;
+// 畫面方向：預設橫的（轉 90°，390 那道牆在下面、大門在右下角）。nate：「可以整個圖轉橫的嘛」。按「轉向」會記住，下次開一樣
+const ROT_KEY='房屋平面配置_轉向';
+// 手機直拿（畫面又窄又高）而且沒按過「轉向」時，預設用直的（0°）才塞得下；電腦維持橫的（90°）。820 跟 CSS 的手機版面斷點一致
+let startRot=(window.innerWidth<=820&&window.innerHeight>window.innerWidth)?0:90;
+try{const v=parseInt(localStorage.getItem(ROT_KEY),10);if([0,90,180,270].includes(v))startRot=v;}catch(_){}
+let view={cx:0,cy:0,s:1,rot:startRot}, cw=800, ch=600, fitted=false;
+const opts={grid:true,dims:true,clear:true,magnet:true,snap:1};
+const measure={on:false,a:null,b:null,hover:null};
+let drag=null, hist=[], raf=0;
+
+/* ================= 座標換算 ================= */
+function rotv(x,y,deg){const r=deg*Math.PI/180,c=Math.cos(r),s=Math.sin(r);return [x*c-y*s,x*s+y*c];}
+function toS(x,y){const v=rotv(x-view.cx,y-view.cy,view.rot);return [cw/2+v[0]*view.s,ch/2+v[1]*view.s];}
+function toW(px,py){const v=rotv((px-cw/2)/view.s,(py-ch/2)/view.s,-view.rot);return [view.cx+v[0],view.cy+v[1]];}
+function n1(v){return (Math.round(v*10)/10).toFixed(1);}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function estW(t){let w=0;for(const c of String(t))w+=c.charCodeAt(0)>255?12:6.8;return w;}
+function fit(){
+  const b=G.bbox,pts=[[b.x0,b.y0],[b.x1,b.y0],[b.x0,b.y1],[b.x1,b.y1]].map(p=>rotv(p[0],p[1],view.rot));
+  const ex=Math.max(...pts.map(p=>p[0]))-Math.min(...pts.map(p=>p[0]));
+  const ey=Math.max(...pts.map(p=>p[1]))-Math.min(...pts.map(p=>p[1]));
+  const small=cw<600; // 手機：左右留白縮小，不然 390 寬的畫面光留白就吃掉一半；下面多留一點，因為手機上底下那行說明會折成兩行
+  const m=small?62:100,mTop=small?86:96,mBot=small?124:92; // 上面留給按鈕、下面留給比例尺（留白要夠放牆外面的尺寸標註）
+  view.s=Math.max(0.05,Math.min((cw-2*m)/ex,(ch-mTop-mBot)/ey));
+  const sh=rotv(0,(mTop-mBot)/2/view.s,-view.rot);
+  view.cx=(b.x0+b.x1)/2-sh[0]; view.cy=(b.y0+b.y1)/2-sh[1];
+}
+// 「離左邊的牆／離上面的牆」照畫面上看到的方向算（轉橫之後左邊、上面是哪面牆會變）
+function houseMin(){ // 主屋外框（不含廚房）轉到畫面方向後的左上角
+  const b=G.house,pts=[[b.x0,b.y0],[b.x1,b.y0],[b.x0,b.y1],[b.x1,b.y1]].map(p=>rotv(p[0],p[1],view.rot));
+  return [Math.min(...pts.map(p=>p[0])),Math.min(...pts.map(p=>p[1]))];
+}
+function screenPos(it){
+  const e=ext(it),c=rotv(it.x,it.y,view.rot),m=houseMin(),sw=(view.rot%180!==0);
+  return [c[0]-(sw?e[1]:e[0])-m[0], c[1]-(sw?e[0]:e[1])-m[1]];
+}
+function setScreenPos(it,X,Y){
+  const e=ext(it),c=rotv(it.x,it.y,view.rot),m=houseMin(),sw=(view.rot%180!==0);
+  if(X!==null)c[0]=X+(sw?e[1]:e[0])+m[0];
+  if(Y!==null)c[1]=Y+(sw?e[0]:e[1])+m[1];
+  const w=rotv(c[0],c[1],-view.rot); it.x=Math.round(w[0]*1000)/1000; it.y=Math.round(w[1]*1000)/1000;
+}
+function ext(it){const r=it.rot*Math.PI/180,c=Math.abs(Math.cos(r)),s=Math.abs(Math.sin(r));return [it.w/2*c+it.d/2*s,it.w/2*s+it.d/2*c];}
+function getSel(){return items.find(i=>i.id===selId)||null;}
+
+/* ================= 畫圖 ================= */
+function ln(x1,y1,x2,y2,cls){const a=toS(x1,y1),b=toS(x2,y2);return '<line class="'+cls+'" x1="'+n1(a[0])+'" y1="'+n1(a[1])+'" x2="'+n1(b[0])+'" y2="'+n1(b[1])+'"/>';}
+function poly(pts,cls,extra){return '<polygon class="'+cls+'" points="'+pts.map(p=>{const s=toS(p[0],p[1]);return n1(s[0])+','+n1(s[1]);}).join(' ')+'" '+(extra||'')+'/>';}
+function normAng(a){a=((a%360)+360)%360;if(a>90&&a<=270)a-=180;if(a>270)a-=360;return a;}
+function dimSVG(d){
+  const a=toS(d.x1,d.y1),b=toS(d.x2,d.y2),n=rotv(d.nx,d.ny,view.rot);
+  const off=16+(d.tier||0)*30;
+  const a2=[a[0]+n[0]*off,a[1]+n[1]*off],b2=[b[0]+n[0]*off,b[1]+n[1]*off];
+  const len=Math.hypot(b2[0]-a2[0],b2[1]-a2[1]);
+  const ang=normAng(Math.atan2(b2[1]-a2[1],b2[0]-a2[0])*180/Math.PI);
+  const extra=len<estW(d.t)+2?12:0;
+  const tx=(a2[0]+b2[0])/2+n[0]*(9+extra),ty=(a2[1]+b2[1])/2+n[1]*(9+extra);
+  const L=(p,q)=>'<line x1="'+n1(p[0])+'" y1="'+n1(p[1])+'" x2="'+n1(q[0])+'" y2="'+n1(q[1])+'"/>';
+  const e=(p)=>L([p[0]+n[0]*4,p[1]+n[1]*4],[p[0]+n[0]*(off+4),p[1]+n[1]*(off+4)]);
+  return '<g class="dim'+(d.warn?' warn':'')+(d.sum?' sum':'')+'">'+e(a)+e(b)+L(a2,b2)+'<text'+(d.k?' data-k="'+d.k+'"':'')+' x="'+n1(tx)+'" y="'+n1(ty)+'" transform="rotate('+n1(ang)+' '+n1(tx)+' '+n1(ty)+')">'+esc(d.t)+'</text></g>';
+}
+function labelSVG(l){
+  const s=toS(l.x,l.y); let x=s[0],y=s[1];
+  const ang=l.upright?0:normAng((l.ang||0)+view.rot); // upright：房間名稱永遠正著
+  if(l.dx){const v=rotv(l.dx,0,view.rot);x+=v[0];y+=v[1];}
+  const body=l.parts?l.parts.map(p=>p[1]?'<tspan data-k="'+p[1]+'">'+esc(p[0])+'</tspan>':esc(p[0])).join(''):esc(l.t);
+  return '<text class="lbl'+(l.warn?' warn':'')+(l.gray?' gray':'')+'" x="'+n1(x)+'" y="'+n1(y)+'" transform="rotate('+n1(ang)+' '+n1(x)+' '+n1(y)+')">'+body+'</text>';
+}
+function corners(it,x0,y0,x1,y1){ // 家具自己的座標 → 世界座標
+  return [[x0,y0],[x1,y0],[x1,y1],[x0,y1]].map(p=>{const v=rotv(p[0],p[1],it.rot);return [it.x+v[0],it.y+v[1]];});
+}
+function clearances(it){
+  const e=ext(it),out=[];
+  for(const dir of [[-1,0],[1,0],[0,-1],[0,1]]){
+    const ox=it.x+dir[0]*e[0],oy=it.y+dir[1]*e[1]; let best=Infinity;
+    for(const s of G.segs){
+      if(dir[0]!==0&&Math.abs(s[0]-s[2])<1e-6){
+        if(oy>=Math.min(s[1],s[3])-0.01&&oy<=Math.max(s[1],s[3])+0.01){const t=(s[0]-ox)*dir[0];if(t>=-0.5&&t<best)best=t;}
+      }else if(dir[1]!==0&&Math.abs(s[1]-s[3])<1e-6){
+        if(ox>=Math.min(s[0],s[2])-0.01&&ox<=Math.max(s[0],s[2])+0.01){const t=(s[1]-oy)*dir[1];if(t>=-0.5&&t<best)best=t;}
+      }
+    }
+    if(best<Infinity&&best>0.5)out.push({x1:ox,y1:oy,x2:ox+dir[0]*best,y2:oy+dir[1]*best,d:best});
+  }
+  return out;
+}
+function render(){
+  raf=0; let h='';
+  const b=G.bbox;
+  if(opts.grid&&view.s*GRID>=5){ // 40×40 一格，從左上角 (0,0) 開始排
+    const pad=GRID*2;
+    const gx0=Math.floor((b.x0-pad)/GRID)*GRID,gx1=Math.ceil((b.x1+pad)/GRID)*GRID,gy0=Math.floor((b.y0-pad)/GRID)*GRID,gy1=Math.ceil((b.y1+pad)/GRID)*GRID;
+    for(let x=gx0;x<=gx1;x+=GRID)h+=ln(x,gy0,x,gy1,'grid');
+    for(let y=gy0;y<=gy1;y+=GRID)h+=ln(gx0,y,gx1,y,'grid');
+  }
+  for(const s of G.dashed)h+=ln(s[0],s[1],s[2],s[3],'dash');
+  for(const s of G.walls)h+=ln(s[0],s[1],s[2],s[3],'wall');
+  for(const d of G.doors)h+=ln(d[0],d[1],d[2],d[3],'door');
+  for(const c of G.cols)h+=poly([[c.x,c.y],[c.x+c.w,c.y],[c.x+c.w,c.y+c.h],[c.x,c.y+c.h]],'col');
+  if(opts.dims){
+    for(const l of G.labels)if(l.gray)h+=labelSVG(l);  // 房間名稱先畫、墊在下面：圖縮很小疊在一起時，尺寸數字在上面看得到也點得到
+    for(const d of G.dims)h+=dimSVG(d);
+    for(const l of G.labels)if(!l.gray)h+=labelSVG(l);
+  }
+  for(const it of items){
+    const sel=it.id===selId;
+    h+=poly(corners(it,-it.w/2,-it.d/2,it.w/2,it.d/2),'it'+(sel?' sel':''),'fill="'+esc(it.color)+'"');
+    const bd=Math.min(it.d*0.2,14);
+    h+=poly(corners(it,-it.w/2,-it.d/2,it.w/2,-it.d/2+bd),'back');
+    const c=toS(it.x,it.y);
+    h+='<text class="itxt" x="'+n1(c[0])+'" y="'+n1(c[1]-7)+'">'+esc(it.name)+'</text>';
+    h+='<text class="itxt" x="'+n1(c[0])+'" y="'+n1(c[1]+8)+'">'+it.w+'×'+it.d+'</text>';
+  }
+  const si=getSel();
+  if(si&&opts.clear){
+    for(const c of clearances(si)){
+      const a=toS(c.x1,c.y1),q=toS(c.x2,c.y2);
+      h+='<g class="clr"><line x1="'+n1(a[0])+'" y1="'+n1(a[1])+'" x2="'+n1(q[0])+'" y2="'+n1(q[1])+'"/><text x="'+n1((a[0]+q[0])/2)+'" y="'+n1((a[1]+q[1])/2)+'">'+Math.round(c.d)+'</text></g>';
+    }
+  }
+  if(measure.on&&measure.a){
+    const e=measure.b||measure.hover;
+    const a=toS(measure.a[0],measure.a[1]);
+    h+='<g class="ms"><circle cx="'+n1(a[0])+'" cy="'+n1(a[1])+'" r="4"/>';
+    if(e){const q=toS(e[0],e[1]);const dx=Math.abs(e[0]-measure.a[0]),dy=Math.abs(e[1]-measure.a[1]);
+      h+='<line x1="'+n1(a[0])+'" y1="'+n1(a[1])+'" x2="'+n1(q[0])+'" y2="'+n1(q[1])+'"/><circle cx="'+n1(q[0])+'" cy="'+n1(q[1])+'" r="4"/>';
+      h+='<text x="'+n1((a[0]+q[0])/2)+'" y="'+n1((a[1]+q[1])/2-10)+'">'+Math.round(Math.hypot(dx,dy))+' 公分（橫 '+Math.round(dx)+'／直 '+Math.round(dy)+'）</text>';}
+    h+='</g>';
+  }
+  svg.innerHTML=h;
+  let unit=100; if(unit*view.s>220)unit=50; if(unit*view.s<45)unit=200; if(unit*view.s<45)unit=500;
+  $('#bar').style.width=(unit*view.s).toFixed(0)+'px'; $('#barTxt').textContent=unit+' 公分';
+}
+function draw(){if(!raf)raf=requestAnimationFrame(render);}
+
+/* ================= 側邊面板 ================= */
+function renderList(){
+  const ul=$('#list'); ul.innerHTML='';
+  $('#listEmpty').hidden=items.length>0;
+  for(const it of items){
+    const li=document.createElement('li'); if(it.id===selId)li.className='sel';
+    li.innerHTML='<span>'+esc(it.name)+'</span><small>'+it.w+'×'+it.d+'</small>';
+    li.addEventListener('click',()=>{select(it.id);});
+    ul.appendChild(li);
+  }
+}
+function fillForm(){
+  const it=getSel(); $('#selForm').hidden=!it; $('#noSel').hidden=!!it; if(!it)return;
+  const e=ext(it);
+  const set=(id,v)=>{const el=$(id);if(document.activeElement!==el)el.value=v;};
+  set('#fName',it.name);set('#fW',it.w);set('#fD',it.d);set('#fRot',it.rot);
+  const sp=screenPos(it);
+  set('#fX',Math.round(sp[0]*10)/10);set('#fY',Math.round(sp[1]*10)/10);set('#fColor',it.color);
+}
+function select(id){selId=id;fillForm();renderList();draw();}
+function refresh(){fillForm();renderList();draw();}
+function planSum(){
+  const g=G,r=v=>Math.round(v*10)/10;
+  let t='整間（長方形）：寬 '+r(g.W)+' × 深 '+r(g.yBot);
+  t+='<br>上牆數字合計 '+r(g.topSum)+'／下牆數字合計 '+r(g.botSum);
+  if(Math.abs(g.topSum-g.botSum)>0.5)t+=' <span class="warnTxt">（上牆'+(g.topSum>g.botSum?'多 ':'少 ')+r(Math.abs(g.topSum-g.botSum))+'；總寬以下牆為準，差額用紅字標在上牆）</span>';
+  t+='<br>上半部左邊加總 '+r(g.yL)+'／右邊加總 '+r(g.yR);
+  if(Math.abs(g.yL-g.yR)>0.5)t+=' <span class="warnTxt">（差 '+r(Math.abs(g.yL-g.yR))+'）</span>';
+  t+='<br>下半部深 '+r(g.lowH)+(Math.abs(g.lowH-TILE_NOTE)>0.5?' <span class="warnTxt">（手寫 12×40+12＝'+TILE_NOTE+'）</span>':'');
+  $('#planSum').innerHTML=t;
+}
+function buildPlanForm(){
+  const box=$('#planForm'); box.innerHTML='';
+  for(const f of PLAN_FIELDS){
+    if(f.length===1){const h=document.createElement('h3');h.textContent=f[0];box.appendChild(h);continue;}
+    const lab=document.createElement('label'); lab.className='row';
+    lab.innerHTML='<span'+(f[2]?' class="warnTxt"':'')+'>'+esc(f[1])+(f[2]?' ?':'')+'</span>';
+    const inp=document.createElement('input'); inp.type='number'; inp.min='0'; inp.step='1'; inp.value=plan[f[0]]; inp.dataset.k=f[0];
+    inp.addEventListener('input',()=>{const v=parseFloat(inp.value);if(isFinite(v)&&v>=0){plan[f[0]]=v;G=geom(plan);planSum();draw();}});
+    inp.addEventListener('change',commit);
+    lab.appendChild(inp); box.appendChild(lab);
+  }
+  planSum();
+}
+
+/* ================= 復原／存檔 ================= */
+function snap(){return JSON.stringify({version:1,plan,items});}
+function commit(){const s=snap();if(hist[hist.length-1]!==s){hist.push(s);if(hist.length>100)hist.shift();}}
+function restore(str,keepHist,fromFile){
+  const o=JSON.parse(str);
+  const sp=Object.assign({},o.plan||{});
+  // 舊存檔換算：以前下牆右半是 bA(200)＋bB(58，含柱) 或 bA(200)＋b33(33)，現在合成一段 bA(233)
+  if(sp.bB!==undefined||sp.b33!==undefined){
+    const add=sp.b33!==undefined?sp.b33:Math.max(0,sp.bB-(sp.c5w!==undefined?sp.c5w:DEFAULT_PLAN.c5w));
+    sp.bA=(sp.bA!==undefined?sp.bA:200)+add; delete sp.bB; delete sp.b33;
+  }
+  delete sp.s120; // 舊存檔的 120：左邊兩間房間現在共用 s125
+  if(fromFile){
+    // 開存檔：存檔裡「跟存檔當時的預設值一樣」的尺寸＝nate 沒有自己改過，不要拿它蓋掉程式現在的預設值。
+    // 不這樣做的話，程式改了預設尺寸（2026-11-17：125→165、門 78→80、233→235）之後開舊存檔，數字會全部被蓋回舊的。
+    // o.base＝存檔當時的預設值（2026-11-17 起存檔會帶）；更舊的存檔沒有，用 PLAN_BASE_V1。只有開檔走這段，復原（Ctrl+Z）不走。
+    const base=(o.base&&typeof o.base==='object')?o.base:PLAN_BASE_V1;
+    for(const k of Object.keys(sp)){ if(base[k]!==undefined&&sp[k]===base[k])delete sp[k]; }
+  }
+  plan=Object.assign({},DEFAULT_PLAN,sp);
+  items=(o.items||[]).map(i=>({id:+i.id||0,name:String(i.name||'家具'),w:+i.w||50,d:+i.d||50,x:+i.x||0,y:+i.y||0,rot:+i.rot||0,color:i.color||'#cccccc'}));
+  items.forEach((it,k)=>{if(!it.id)it.id=1000+k;});
+  nextId=items.reduce((m,i)=>Math.max(m,i.id),0)+1;
+  if(!getSel())selId=null;
+  G=geom(plan); buildPlanForm(); refresh();
+  if(!keepHist)commit();
+}
+function undo(){if(hist.length>1){hist.pop();restore(hist[hist.length-1],true);}}
+
+/* ================= 家具操作 ================= */
+function addItem(p){
+  const c=toW(cw/2,ch/2),k=items.length%6;
+  const it={id:nextId++,name:p[0],w:p[1],d:p[2],x:Math.round(c[0])+k*10,y:Math.round(c[1])+k*10,rot:0,color:p[3]};
+  items.push(it); selId=it.id; commit(); refresh();
+}
+function rotateSel(deg){const it=getSel();if(!it)return;it.rot=((it.rot+deg)%360+360)%360;commit();refresh();}
+function delSel(){if(!getSel())return;items=items.filter(i=>i.id!==selId);selId=null;commit();refresh();}
+function dupSel(){const it=getSel();if(!it)return;const c=Object.assign({},it,{id:nextId++,x:it.x+20,y:it.y+20});items.push(c);selId=c.id;commit();refresh();}
+function hit(wx,wy){
+  for(let i=items.length-1;i>=0;i--){const it=items[i],v=rotv(wx-it.x,wy-it.y,-it.rot);if(Math.abs(v[0])<=it.w/2&&Math.abs(v[1])<=it.d/2)return it;}
+  return null;
+}
+function place(it,x,y,noMagnet){
+  const e=ext(it);
+  if(opts.snap>0){x=Math.round((x-e[0])/opts.snap)*opts.snap+e[0];y=Math.round((y-e[1])/opts.snap)*opts.snap+e[1];}
+  if(opts.magnet&&!noMagnet&&Math.abs(it.rot%90)<1e-6){
+    const tol=9/view.s; let bx=tol,by=tol,nx=x,ny=y;
+    for(const s of G.segs){
+      if(Math.abs(s[0]-s[2])<1e-6){
+        if(Math.max(s[1],s[3])<y-e[1]+0.5||Math.min(s[1],s[3])>y+e[1]-0.5)continue;
+        for(const c of [s[0]+e[0],s[0]-e[0]]){const dd=Math.abs(c-x);if(dd<bx){bx=dd;nx=c;}}
+      }else if(Math.abs(s[1]-s[3])<1e-6){
+        if(Math.max(s[0],s[2])<x-e[0]+0.5||Math.min(s[0],s[2])>x+e[0]-0.5)continue;
+        for(const c of [s[1]+e[1],s[1]-e[1]]){const dd=Math.abs(c-y);if(dd<by){by=dd;ny=c;}}
+      }
+    }
+    x=nx;y=ny;
+  }
+  it.x=x;it.y=y;
+}
+function snapPoint(w){ // 量距離時吸到牆上
+  const tol=9/view.s; let best=tol,out=w;
+  for(const s of G.segs){
+    const px=Math.max(Math.min(s[0],s[2]),Math.min(Math.max(s[0],s[2]),w[0]));
+    const py=Math.max(Math.min(s[1],s[3]),Math.min(Math.max(s[1],s[3]),w[1]));
+    const d=Math.hypot(px-w[0],py-w[1]); if(d<best){best=d;out=[px,py];}
+  }
+  return out;
+}
+
+/* ================= 滑鼠／觸控 ================= */
+function loc(e){const r=svg.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top];}
+/* ---- 點圖上的數字直接改尺寸 ---- */
+const dimBox=$('#dimEdit'), dimIn=$('#dimEditIn'); let editing=null;
+const FIELD_NAME={}; PLAN_FIELDS.forEach(f=>{if(f.length>1)FIELD_NAME[f[0]]=f[1].replace(/　/g,' ');});
+function dimKey(e){return (!measure.on&&e.target&&e.target.getAttribute)?e.target.getAttribute('data-k'):null;}
+FIELD_NAME.lowH='中間那道牆（下半部深）';
+FIELD_NAME.doorM='右邊房間的門（改它會調整門右邊那段牆）';
+function getVal(k){
+  if(k==='lowH')return Math.round(G.lowH*10)/10;
+  if(k==='doorM')return Math.round((G.xDR-G.xDiv2)*10)/10;
+  return plan[k];
+}
+function setPlan(k,v){
+  if(k==='lowH'){k='l263';v=Math.max(0,Math.round((v-plan.l303-plan.c4h)*10)/10);} // 改中間那道牆的長度＝調整左下那段
+  if(k==='doorM'){k='seg180';v=Math.max(0,Math.round((plan.bA+plan.c5w-v)*10)/10);}  // 門寬＝bA+25−180（235+25−180＝80），改門寬＝調整 180 那段
+  plan[k]=v; G=geom(plan); planSum();
+  const i=document.querySelector('#planForm input[data-k="'+k+'"]'); if(i&&document.activeElement!==i)i.value=v;
+  draw();
+}
+function startDimEdit(k,el){ // el：被點的那個數字，或它當時的外框（手機是放開手指才開框，那時數字可能已經重畫過，所以先記外框）
+  finishDimEdit(true);
+  const r=el.getBoundingClientRect?el.getBoundingClientRect():el,sr=stage.getBoundingClientRect();
+  const x=Math.max(84,Math.min(sr.width-84,r.left+r.width/2-sr.left)),y=Math.max(48,Math.min(sr.height-48,r.top+r.height/2-sr.top));
+  dimBox.style.left=x+'px'; dimBox.style.top=y+'px';
+  $('#dimEditName').textContent=FIELD_NAME[k]||k;
+  dimIn.value=getVal(k); dimBox.hidden=false; editing={k,old:getVal(k)};
+  setTimeout(()=>{dimIn.focus();dimIn.select();},10);
+}
+function finishDimEdit(ok){
+  if(!editing)return; const ed=editing; editing=null; dimBox.hidden=true;
+  const v=parseFloat(dimIn.value);
+  if(ok&&isFinite(v)&&v>=0){setPlan(ed.k,v);commit();} else setPlan(ed.k,ed.old);
+}
+dimIn.addEventListener('input',()=>{if(!editing)return;const v=parseFloat(dimIn.value);if(isFinite(v)&&v>=0)setPlan(editing.k,v);});
+dimIn.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();finishDimEdit(true);}
+  else if(e.key==='Escape'){e.preventDefault();finishDimEdit(false);}
+});
+dimIn.addEventListener('blur',()=>finishDimEdit(true));
+svg.addEventListener('mousedown',e=>{if(dimKey(e))e.preventDefault();}); // 不讓點數字這一下把輸入框的游標搶走
+dimBox.addEventListener('mousedown',e=>{if(e.target!==dimIn)e.preventDefault();}); // 點到框裡的說明文字也不要搶走游標（手機點一下之後補發的滑鼠事件可能落在這裡，會讓框一開就關）
+
+/* ---- 兩指縮放（手機／觸控螢幕）。nate 2026-11-17：「我想用手機點網址就可以開」 ---- */
+// touches＝目前按在圖上的手指（pointerId → 畫面座標）。第二指一放下就進入縮放：取消正在進行的拖曳，之後照兩指的距離縮放、照兩指中點平移。
+const touches=new Map(); let pinch=null;
+function pinchNow(){const a=[...touches.values()];return {d:Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])||1,mx:(a[0][0]+a[1][0])/2,my:(a[0][1]+a[1][1])/2};}
+function touchGone(e){ // 手指離開（不管在哪裡放開都要收到，所以掛在 window 上）
+  if(e.pointerType!=='touch')return;
+  touches.delete(e.pointerId); if(touches.size<2)pinch=null;
+}
+window.addEventListener('pointerup',touchGone,true); window.addEventListener('pointercancel',touchGone,true);
+
+svg.addEventListener('pointerdown',e=>{
+  if(e.button!==undefined&&e.button>0)return;
+  const touch=e.pointerType==='touch';
+  if(touch){
+    // 先把這根手指綁在整張圖上：手指底下的數字／線一重畫就會被換掉，不綁的話後面的移動會送到別的東西去（縮放會歪掉）
+    try{svg.setPointerCapture(e.pointerId);}catch(_){}
+    touches.set(e.pointerId,loc(e));
+    if(touches.size>=2){
+      if(touches.size===2){
+        if(drag&&drag.type==='item'&&drag.moved)commit(); // 拖家具拖到一半放下第二指：家具停在目前位置
+        drag=null; pinch=pinchNow();
+      }
+      return; // 第二指（以後）不當成點擊／拖曳
+    }
+  }
+  const dk=dimKey(e);
+  if(dk&&!touch){startDimEdit(dk,e.target);return;} // 滑鼠：按下數字馬上改。手機：手指按在數字上可能是要拖或縮放，放開時沒動才算點（見 endDrag）
+  const p=loc(e),w=toW(p[0],p[1]);
+  if(measure.on){
+    const q=snapPoint(w);
+    if(!measure.a||measure.b){measure.a=q;measure.b=null;measure.hover=null;}else measure.b=q;
+    draw();return;
+  }
+  try{svg.setPointerCapture(e.pointerId);}catch(_){}
+  const it=dk?null:hit(w[0],w[1]);
+  if(it){
+    items=items.filter(i=>i!==it).concat([it]);
+    selId=it.id; drag={type:'item',it,ox:w[0]-it.x,oy:w[1]-it.y,moved:false}; refresh();
+  }else drag={type:'pan',px:p[0],py:p[1],cx:view.cx,cy:view.cy,moved:false,
+              tol:touch?8:3,                                      // 手指點一下難免抖幾點，放寬一點才分得出「點」跟「拖」
+              dk:dk||null,dkRect:dk?e.target.getBoundingClientRect():null}; // 手機按在數字上：先記下來，放開時沒拖才開改尺寸的框
+});
+svg.addEventListener('pointermove',e=>{
+  const p=loc(e);
+  if(e.pointerType==='touch'&&touches.has(e.pointerId)){
+    touches.set(e.pointerId,p);
+    if(pinch&&touches.size>=2){
+      const n=pinchNow();
+      const v=rotv((n.mx-pinch.mx)/view.s,(n.my-pinch.my)/view.s,-view.rot); view.cx-=v[0]; view.cy-=v[1]; // 兩指一起移＝平移
+      zoomAt(n.mx,n.my,n.d/pinch.d);                                                                          // 兩指距離變了＝以中點為中心縮放
+      pinch=n; return;
+    }
+  }
+  if(measure.on){if(measure.a&&!measure.b){measure.hover=snapPoint(toW(p[0],p[1]));draw();}return;}
+  if(!drag)return;
+  if(drag.type==='item'){
+    const w=toW(p[0],p[1]); place(drag.it,w[0]-drag.ox,w[1]-drag.oy,e.altKey); drag.moved=true; fillForm(); draw();
+  }else{
+    const dx=p[0]-drag.px,dy=p[1]-drag.py; if(Math.abs(dx)+Math.abs(dy)>(drag.tol||3))drag.moved=true;
+    const v=rotv(dx/view.s,dy/view.s,-view.rot); view.cx=drag.cx-v[0]; view.cy=drag.cy-v[1]; draw();
+  }
+});
+function endDrag(){
+  if(!drag)return;
+  const d=drag; drag=null;
+  if(d.type==='item'){if(d.moved)commit();}
+  else if(!d.moved){
+    if(d.dk){startDimEdit(d.dk,d.dkRect);try{dimIn.focus();}catch(_){}} // 手機：在數字上點一下（沒拖、沒放第二指）＝改尺寸；當場 focus 鍵盤才會跳出來
+    else if(selId!==null)select(null);
+  }
+}
+svg.addEventListener('pointerup',endDrag);
+svg.addEventListener('pointercancel',()=>{if(drag)drag.dk=null;endDrag();}); // 被系統中斷的不算「點一下數字」
+function zoomAt(px,py,f){
+  const before=toW(px,py); view.s=Math.max(0.08,Math.min(12,view.s*f));
+  const after=toW(px,py); view.cx+=before[0]-after[0]; view.cy+=before[1]-after[1]; draw();
+}
+svg.addEventListener('wheel',e=>{e.preventDefault();const p=loc(e);zoomAt(p[0],p[1],Math.exp(-e.deltaY*0.0015));},{passive:false});
+
+/* ================= 按鈕 ================= */
+$('#bZoomIn').onclick=()=>zoomAt(cw/2,ch/2,1.25);
+$('#bZoomOut').onclick=()=>zoomAt(cw/2,ch/2,0.8);
+$('#bFit').onclick=()=>{fit();draw();};
+$('#bRot').onclick=()=>{view.rot=(view.rot+90)%360;try{localStorage.setItem(ROT_KEY,String(view.rot));}catch(_){}fit();fillForm();draw();};
+$('#bMeasure').onclick=()=>{measure.on=!measure.on;measure.a=measure.b=measure.hover=null;$('#bMeasure').classList.toggle('on',measure.on);svg.classList.toggle('measuring',measure.on);draw();};
+$('#bRotL').onclick=()=>rotateSel(-90); $('#bRotR').onclick=()=>rotateSel(90);
+$('#bDel').onclick=delSel; $('#bDup').onclick=dupSel; $('#bUndo').onclick=undo;
+$('#bClear').onclick=()=>{if(items.length&&confirm('確定清空所有家具？（可以按復原救回）')){items=[];selId=null;commit();refresh();}};
+$('#bPlanReset').onclick=()=>{plan=Object.assign({},DEFAULT_PLAN);G=geom(plan);buildPlanForm();commit();draw();};
+$('#bSave').onclick=()=>{
+  const blob=new Blob([JSON.stringify({version:1,plan,items,presets:myPresets,base:DEFAULT_PLAN},null,1)],{type:'application/json'}); // base：存檔當時的預設值，開檔時用來分辨哪些尺寸是自己改過的
+  const a=document.createElement('a'),d=new Date(),z=n=>String(n).padStart(2,'0');
+  a.href=URL.createObjectURL(blob); a.download='房屋配置_'+d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+'_'+z(d.getHours())+z(d.getMinutes())+'.json';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+};
+$('#bOpen').onclick=()=>$('#fileIn').click();
+$('#fileIn').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{
+    restore(r.result,false,true);
+    const o=JSON.parse(r.result);
+    if(Array.isArray(o.presets)){ for(const p of o.presets)addMyPreset(p,true); saveMy(); renderMy(); } // 存檔裡的「我的家具」併進來（同名同尺寸不重複）
+    fit();draw();
+  }catch(err){alert('這個檔讀不進來：'+err.message);}};
+  r.readAsText(f); e.target.value='';
+});
+PRESETS.forEach(p=>{const b=document.createElement('button');b.innerHTML=esc(p[0])+'<small>'+p[1]+'×'+p[2]+'</small>';b.onclick=()=>addItem(p);$('#presets').appendChild(b);});
+
+/* ---- 自己新增家具／我的家具 ---- */
+function cleanPreset(p){
+  if(!Array.isArray(p))return null;
+  const name=String(p[0]||'').trim()||'家具', w=+p[1], d=+p[2];
+  const color=/^#[0-9a-f]{6}$/i.test(p[3])?p[3]:'#f2b5a0';
+  return (w>0&&d>0)?[name,w,d,color]:null;
+}
+function addMyPreset(p,quiet){
+  p=cleanPreset(p); if(!p)return false;
+  const i=myPresets.findIndex(q=>q[0]===p[0]&&q[1]===p[1]&&q[2]===p[2]);
+  if(i>=0)myPresets[i]=p; else myPresets.push(p);   // 同名同尺寸就更新顏色，不重複
+  if(!quiet){saveMy();renderMy();}
+  return true;
+}
+function saveMy(){try{localStorage.setItem(MY_KEY,JSON.stringify(myPresets));}catch(_){}}
+function loadMy(){try{const a=JSON.parse(localStorage.getItem(MY_KEY)||'[]');if(Array.isArray(a))myPresets=a.map(cleanPreset).filter(Boolean);}catch(_){myPresets=[];}}
+function renderMy(){
+  const box=$('#myPresets'); box.innerHTML='';
+  $('#myBox').hidden=myPresets.length===0;
+  myPresets.forEach((p,i)=>{
+    const g=document.createElement('span'); g.className='my';
+    const sw=document.createElement('button'); sw.className='sw'; sw.tabIndex=-1; sw.style.background=p[3]; sw.title='顏色';
+    const b=document.createElement('button'); b.innerHTML=esc(p[0])+'<small>'+p[1]+'×'+p[2]+'</small>'; b.onclick=()=>addItem(p);
+    const x=document.createElement('button'); x.className='x'; x.textContent='×'; x.title='刪掉這個按鈕';
+    x.onclick=()=>{if(confirm('刪掉「'+p[0]+'」這個按鈕？（圖上已經放的不會被刪）')){myPresets.splice(i,1);saveMy();renderMy();}};
+    g.append(sw,b,x); box.appendChild(g);
+  });
+}
+$('#bNew').onclick=()=>{
+  const name=$('#nName').value.trim(), w=parseFloat($('#nW').value), d=parseFloat($('#nD').value), color=$('#nColor').value;
+  const msg=$('#nMsg');
+  if(!(w>0)||!(d>0)){msg.textContent='寬、深要填大於 0 的數字';return;}
+  if(!name){msg.textContent='請填名稱';$('#nName').focus();return;}
+  msg.textContent='';
+  const p=[name,w,d,color];
+  if($('#nKeep').checked)addMyPreset(p);
+  addItem(p);
+};
+$('#nName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#bNew').click();}});
+$('#bKeep').onclick=()=>{
+  const it=getSel(); if(!it)return;
+  addMyPreset([it.name,it.w,it.d,it.color]);
+  const b=$('#bKeep'); b.textContent='已存成按鈕 ✓'; setTimeout(()=>{b.textContent='存成按鈕';},1500);
+};
+loadMy(); renderMy();
+
+function bindNum(id,fn){
+  const el=$(id);
+  el.addEventListener('input',()=>{const it=getSel(),v=parseFloat(el.value);if(!it||!isFinite(v))return;fn(it,v);renderList();fillForm();draw();});
+  el.addEventListener('change',()=>{commit();fillForm();});
+}
+bindNum('#fW',(it,v)=>{if(v>0)it.w=v;});
+bindNum('#fD',(it,v)=>{if(v>0)it.d=v;});
+bindNum('#fRot',(it,v)=>{it.rot=((v%360)+360)%360;});
+bindNum('#fX',(it,v)=>{setScreenPos(it,v,null);});
+bindNum('#fY',(it,v)=>{setScreenPos(it,null,v);});
+$('#fName').addEventListener('input',()=>{const it=getSel();if(it){it.name=$('#fName').value;renderList();draw();}});
+$('#fName').addEventListener('change',commit);
+$('#fColor').addEventListener('input',()=>{const it=getSel();if(it){it.color=$('#fColor').value;draw();}});
+$('#fColor').addEventListener('change',commit);
+$('#oGrid').onchange=e=>{opts.grid=e.target.checked;draw();};
+$('#oDims').onchange=e=>{opts.dims=e.target.checked;draw();};
+$('#oClear').onchange=e=>{opts.clear=e.target.checked;draw();};
+$('#oMagnet').onchange=e=>{opts.magnet=e.target.checked;};
+$('#oSnap').onchange=e=>{opts.snap=parseFloat(e.target.value)||0;};
+
+document.addEventListener('keydown',e=>{
+  const t=e.target.tagName; if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return;}
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='d'){e.preventDefault();dupSel();return;}
+  if(e.key==='Escape'){if(measure.on)$('#bMeasure').click();else select(null);return;}
+  const it=getSel(); if(!it)return;
+  const st=e.shiftKey?10:1, mv={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,-st],ArrowDown:[0,st]}[e.key];
+  if(mv){e.preventDefault();const v=rotv(mv[0],mv[1],-view.rot);it.x+=v[0];it.y+=v[1];commit();refresh();}
+  else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();delSel();}
+  else if(e.key.toLowerCase()==='r'){rotateSel(90);}
+});
+
+/* ================= 啟動 ================= */
+function resize(){
+  const r=stage.getBoundingClientRect(); if(r.width<10||r.height<10)return;
+  cw=r.width; ch=r.height; svg.setAttribute('viewBox','0 0 '+cw+' '+ch);
+  if(!fitted){fit();fitted=true;}
+  draw();
+}
+if(window.ResizeObserver)new ResizeObserver(resize).observe(stage); else window.addEventListener('resize',resize);
+buildPlanForm(); commit(); resize(); refresh();
+// 給自動測試用
+window.__plan={get G(){return G;},get items(){return items;},get view(){return view;},get myPresets(){return myPresets;},toS,toW,geom,DEFAULT_PLAN};
+})();
+</script>
+</body>
+</html>
