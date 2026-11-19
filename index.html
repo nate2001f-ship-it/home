@@ -46,6 +46,20 @@
   details h3{font-size:12.5px;margin:10px 0 2px;color:#52606d}
   details ol{padding-left:20px;margin:6px 0;line-height:1.55;font-size:13px}
   #tools{position:absolute;top:10px;right:10px;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+  #gl3{position:absolute;inset:0;width:100%;height:100%;display:none;touch-action:none;cursor:grab}
+  #v3lab{position:absolute;inset:0;pointer-events:none;display:none;overflow:hidden}
+  #v3lab span{position:absolute;transform:translate(-50%,-50%);font-size:12px;color:#3e4c59;background:rgba(255,255,255,.72);padding:1px 6px;border-radius:4px;white-space:nowrap}
+  #v3lab span.dm{font-size:11.5px;color:#1f4f96;background:rgba(255,255,255,.62);padding:0 3px} /* 文字本身不接滑鼠／手指（不然從數字上開始拖會被它攔走）；點數字由畫布自己判斷，見 v3DimAt */
+  #v3lab span.dm.sum{color:#7b8794;font-style:italic}
+  #v3lab span.dm.warn{color:#c62828;font-weight:700}
+  #v3lab span.cl{color:#08724f;font-weight:700;background:rgba(255,255,255,.82)}
+  #v3lab span.gp{color:#5b21b6;font-weight:700;background:rgba(255,255,255,.86)}
+  #v3lab span.ms{color:#a61e4d;font-weight:700;font-size:13px;background:rgba(255,255,255,.9)}
+  #stage.v3.ms #gl3{cursor:crosshair}
+  #v3ctl{position:absolute;left:12px;bottom:52px;display:none;align-items:center;gap:6px;font-size:12.5px;color:#3e4c59;background:rgba(255,255,255,.92);padding:4px 8px;border-radius:6px;border:1px solid #d9dee4}
+  #v3ctl input{width:110px}
+  #stage.v3 #svg{display:none} #stage.v3 #gl3,#stage.v3 #v3lab{display:block} #stage.v3 #v3ctl{display:flex}
+  #hud3d{display:none} #stage.v3 #hud3d{display:inline} #stage.v3 #bar,#stage.v3 #barTxt,#stage.v3 #hud2d{display:none}
   #hud{position:absolute;left:12px;bottom:10px;font-size:12px;color:#52606d;pointer-events:none;background:rgba(255,255,255,.85);padding:4px 8px;border-radius:6px}
   #bar{height:6px;border:1.5px solid #52606d;border-top:none;margin-bottom:2px}
   .wall{stroke:#1f2933;stroke-width:3;stroke-linecap:square}
@@ -647,7 +661,7 @@ qkhEsVvY+sNsAc3GNDu1sI1LNwotD3phLy/PdfoXkO6At37lpCf+J6oHC0nLSontzcjpUrHAtQQIm4Ei
 rO8GcvB4T6NrWZiHJKsCFBKc211j69wt/canrjHKQCuV14zZ5ULqnMsOlKTgDCqdk8tRgwiYlP/tNEBtAEIJN6qxZrCopds9FLl7Zb8C7Wr6v1tijolgGVRl
 Jtdb/0BI4I2mA6BwhCQkai0cDVV4U6zNACmLzML3bjcaCKqAT7OA2ErcxMCMUiKGULS8hrLwAAAAAAAAwSAAAA==
 "/></symbol>
-<symbol id="sp-bedD" viewBox="0 0 266 342" preserveAspectRatio="none" data-box="21 21 224 300" data-l="0.540"><image width="266" height="342" preserveAspectRatio="none" href="data:image/webp;base64,
+<symbol id="sp-bedD" viewBox="0 0 266 342" preserveAspectRatio="none" data-box="21 21 224 300" data-l="0.540" data-ta="0 0.325 1 1" data-tn="被子"><image width="266" height="342" preserveAspectRatio="none" href="data:image/webp;base64,
 UklGRjwdAABXRUJQVlA4WAoAAAAQAAAACQEAVQEAQUxQSP8NAAAB36egbRumCX/euwAiIsMrWZNStuVFwnEjSYq0lT087b/Dh7WHz4j+T8ARsh8RjtZaEzPS
 kKV3ARg0xhCVYYCFqDUtIKhg458iruYJeAfVVAGqg1Pc/p/oLfB9VU8Fau79vMwLVqYhJlBKlyHnBCxXGQ7btg0kS/tvXffw7i8QERMgkLsd8CtytkTSCwig
 CVHjiTE2bRkWnRBmEUBdVM3SEyZ1ZH2ACakTQ13EB/KMD2QqoG76ipHXRQ5glGRUfYCNNX9ufcEFLVPzqgtDEicdJvQF2XmCixz6Ct5R8YdEY0yIGMkFFYVU
@@ -733,7 +747,7 @@ Ex7RSTScBf5YRhpyiSdFNHi6UO8LdlURKtu+XM/eOP1PmygeEYO8JRP/KmdQolnCTfWO+u5T320k3ZtI
 WQbd5+DMfJbzK0/MKVUnY1OF1+NITxc/E9HKB68TwvhWR1b9XYZrvKPHhhEI11CtTQozB8eTHLjeOa9pVT4gWOmRftMo3/DB4LFS5ri4Bsc0pQ+MrINyRx0H
 9GNkmuMyNLF/jRlkAAAAAAAAAAAAAA==
 "/></symbol>
-<symbol id="sp-bedS" viewBox="0 0 172 342" preserveAspectRatio="none" data-box="21 21 130 300" data-l="0.529"><image width="172" height="342" preserveAspectRatio="none" href="data:image/webp;base64,
+<symbol id="sp-bedS" viewBox="0 0 172 342" preserveAspectRatio="none" data-box="21 21 130 300" data-l="0.529" data-ta="0 0.325 1 1" data-tn="被子"><image width="172" height="342" preserveAspectRatio="none" href="data:image/webp;base64,
 UklGRiwVAABXRUJQVlA4WAoAAAAQAAAAqwAAVQEAQUxQSDoLAAABz6e4bRsn0v5jp1z9R0QGP0iSZQFplR8Sjtw2cqQpdSzA/f8HT6ia2XiM6P8EbMVSt1IU
 Ua2Gx9ZahssjzGkgQmDAjyBP2JckXq4ltMeRcPo/UqwBLaaDIV1TcaCObkG5A6P3wJ7ByG3bSNL/n11P4+ks54iYAFDAa9xndRsUFwQIzI+yFBvG2Z12LNEw
 jozMX8sSR/kCUSvK3LXwd+14jHlEAIdJlE3vZl8FLNu2nUiSdK5kDsXMTLOq/m7uD+gRMzMzMwW5u0l3YJakWO9lZI8iYgL8xrYt27YkSb3f9zAtCFFqlR3F
@@ -1783,7 +1797,11 @@ s+huV1Z3V3S3VNqotgOR0gmvTlhFxukEuYquDZfhNJ0msC+43oqd6yeytEVZIG39o9yZ/tOjuQAAAAAA
 <div id="app">
   <main id="stage">
     <svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
+    <canvas id="gl3"></canvas>
+    <div id="v3lab"></div>
+    <div id="v3ctl">牆高 <input id="v3H" type="range" min="0" max="260" step="10" value="110"><span id="v3Hv">110</span> 公分</div>
     <div id="tools">
+      <button id="b3D" title="變成斜上方看的立體圖（也可以拖家具；再按一次回到平面）">3D</button>
       <button id="bGaps" title="顯示家具跟家具之間的距離（紫色）。有選家具＝只看那一件；沒選＝全部">家具間距</button>
       <button id="bMeasure" title="點兩下量任意兩點距離">量距離</button>
       <button id="bZoomIn">＋</button>
@@ -1793,8 +1811,8 @@ s+huV1Z3V3S3VNqotgOR0gmvTlhFxukEuYquDZfhNJ0msC+43oqd6yeytEVZIG39o9yZ/tOjuQAAAAAA
     </div>
     <div id="dimEdit" hidden><span id="dimEditName"></span><input id="dimEditIn" type="number" min="0" step="1"><span>Enter 確定｜Esc 取消</span></div>
     <div id="nameEdit" hidden><input id="nameEditIn" type="text" maxlength="30"><span>Enter 確定｜Esc 取消</span></div>
-    <div id="ctxMenu" hidden><button data-a="rotL">↺ 旋轉 90°</button><button data-a="rotR">↻ 旋轉 90°</button><label>改顏色<input type="color" id="ctxColorIn"></label><button data-a="orig" id="ctxOrig" hidden>恢復原色</button><button data-a="del" class="danger">刪除</button></div>
-    <div id="hud"><div id="bar"></div><span id="barTxt"></span>　點圖上的數字＝改尺寸｜拖家具＝移動｜拖空白＝平移｜滾輪／兩指＝縮放</div>
+    <div id="ctxMenu" hidden><button data-a="rotL">↺ 旋轉 90°</button><button data-a="rotR">↻ 旋轉 90°</button><label>改顏色<input type="color" id="ctxColorIn"></label><label id="ctxTmRow" hidden>方式<select id="ctxTm" style="font:inherit;padding:2px;max-width:150px"></select></label><button data-a="orig" id="ctxOrig" hidden>恢復原色</button><button data-a="del" class="danger">刪除</button></div>
+    <div id="hud"><div id="bar"></div><span id="barTxt"></span><span id="hud2d">　點圖上的數字＝改尺寸｜拖家具＝移動｜拖空白＝平移｜滾輪／兩指＝縮放</span><span id="hud3d">3D：拖家具＝移動｜拖空白＝旋轉｜滾輪／兩指捏＝遠近｜右鍵拖／兩指一起拖＝平移｜家具連點兩下＝改名、右鍵（長按）＝選單｜點數字＝改尺寸</span></div>
   </main>
   <aside id="side">
     <h1>房屋平面配置 <small class="muted">單位：公分</small></h1>
@@ -1837,10 +1855,12 @@ s+huV1Z3V3S3VNqotgOR0gmvTlhFxukEuYquDZfhNJ0msC+43oqd6yeytEVZIG39o9yZ/tOjuQAAAAAA
       <label class="row"><span>名稱</span><input id="fName" type="text"></label>
       <label class="row"><span>寬（公分）</span><input id="fW" type="number" min="1" step="1"></label>
       <label class="row"><span>深（公分）</span><input id="fD" type="number" min="1" step="1"></label>
+      <label class="row"><span>高（公分，3D 用）</span><input id="fH" type="number" min="1" step="1"></label>
       <label class="row"><span>角度</span><input id="fRot" type="number" step="5"></label>
       <label class="row"><span>離左邊的牆</span><input id="fX" type="number" step="1"></label>
       <label class="row"><span>離上面的牆</span><input id="fY" type="number" step="1"></label>
       <label class="row"><span>顏色</span><input id="fColor" type="color"></label>
+      <label class="row" id="fTmRow" hidden><span>調色方式</span><select id="fTm" style="flex:1;min-width:0;font:inherit;padding:3px"></select></label>
       <div class="chips" style="margin-top:6px">
         <button id="bRotL">↺ 轉 90°</button>
         <button id="bRotR">↻ 轉 90°</button>
@@ -1849,7 +1869,7 @@ s+huV1Z3V3S3VNqotgOR0gmvTlhFxukEuYquDZfhNJ0msC+43oqd6yeytEVZIG39o9yZ/tOjuQAAAAAA
         <button id="bOrig" hidden>恢復原色</button>
         <button id="bDel" class="danger">刪除</button>
       </div>
-      <div class="muted" style="margin-top:6px">椅背、床頭那一邊＝靠牆面；櫃子、冰箱有把手的那一邊是正面。家具照名稱畫（沙發、床、桌、椅、櫃、冰箱、神桌、馬桶、浴缸、洗衣機、洗手台、瓦斯爐、電視…），改名稱就換樣子。顏色：照片樣子的家具預設是照片原本的顏色，選了顏色就整件染成那個顏色，按「恢復原色」可以改回來。方向鍵微調 1 公分（按住 Shift 是 10 公分）、R 旋轉、Delete 刪除。在圖上連點兩下家具＝改名；按右鍵（手機長按）＝旋轉或刪除。</div>
+      <div class="muted" style="margin-top:6px">椅背、床頭那一邊＝靠牆面；櫃子、冰箱有把手的那一邊是正面。家具照名稱畫（沙發、床、桌、椅、櫃、冰箱、神桌、馬桶、浴缸、洗衣機、洗手台、瓦斯爐、電視…），改名稱就換樣子。顏色：照片樣子的家具預設是照片原本的顏色，選了顏色才會染，按「恢復原色」可以改回來。染色後可以選「調色方式」：整件染（保留光影）、只染被子（床）、平塗。方向鍵微調 1 公分（按住 Shift 是 10 公分）、R 旋轉、Delete 刪除。在圖上連點兩下家具＝改名；按右鍵（手機長按）＝旋轉或刪除。</div>
     </div>
 
     <h2>家具清單</h2>
@@ -2203,6 +2223,15 @@ function furnGaps(only){ // only＝只算這一件的四個方向；不給＝每
   }
   return out;
 }
+function distLines(){ // 現在該顯示哪些距離（平面圖與 3D 共用）：clr＝選到的家具離牆（綠）、gaps＝家具間距（紫）
+  const si=getSel(),gaps=opts.gaps?furnGaps(si||null):[],clr=[];
+  if(si&&opts.clear)for(const c of clearances(si)){
+    // 這個方向比牆更近的地方有家具擋著（而且擋在正中間那條線上）：離牆的距離就不顯示，改顯示家具間距
+    if(gaps.some(g=>g.dx===c.dx&&g.dy===c.dy&&g.d<c.d&&(c.dx!==0?(si.y>=g.lo&&si.y<=g.hi):(si.x>=g.lo&&si.x<=g.hi))))continue;
+    clr.push(c);
+  }
+  return {clr,gaps};
+}
 function clearances(it){
   const e=ext(it),out=[];
   for(const dir of [[-1,0],[1,0],[0,-1],[0,1]]){
@@ -2414,7 +2443,10 @@ function furnBody(t,W,D,c,name){
 const SPR={};
 document.querySelectorAll('#sprites symbol').forEach(s=>{
   const b=(s.getAttribute('data-box')||'').split(' ').map(Number),v=(s.getAttribute('viewBox')||'').split(' ').map(Number);
-  if(b.length===4&&v.length===4&&b[2]>0&&b[3]>0)SPR[s.id.replace(/^sp-/,'')]={x:b[0],y:b[1],w:b[2],h:b[3],W:v[2],H:v[3],l:+s.getAttribute('data-l')||0.5};
+  if(b.length===4&&v.length===4&&b[2]>0&&b[3]>0){
+    const ta=(s.getAttribute('data-ta')||'').split(' ').map(Number); // 「只染主要部分」的範圍（相對本體的比例：左 上 右 下），例如床只染被子。沒有＝只能整件染
+    SPR[s.id.replace(/^sp-/,'')]={x:b[0],y:b[1],w:b[2],h:b[3],W:v[2],H:v[3],l:+s.getAttribute('data-l')||0.5,ta:ta.length===4&&ta.every(isFinite)?ta:null,tn:s.getAttribute('data-tn')||'主要部分'};
+  }
 });
 function furnSprite(t,it){ // 這件家具用哪張照片；沒有合適的回 null（改用畫的）
   const n=String(it.name||'');let k=null;
@@ -2431,6 +2463,10 @@ function furnSprite(t,it){ // 這件家具用哪張照片；沒有合適的回 n
   return k&&SPR[k]?k:null;
 }
 function spriteOf(it){return furnSprite(furnType(it.name),it);}
+// 調色方式（nate 2026-11-19：「我調整單人床的部分 顏色怎麼調都好像很怪 還是有其他模式可以調整?」——原本整張床連枕頭、床單、床頭板都染成同一色）
+//   0＝整件染、保留光影　1＝只染主要部分（照片有標範圍的才有，目前只有床＝只染被子）　2＝平塗（幾乎純色的色塊）
+// it.tm 沒設＝自動：照片有標範圍就用 1，沒有就用 0。所以床一選顏色預設是「只染被子」
+function tintMode(it,sk){const s=SPR[sk||spriteOf(it)];if(!s)return 0;let m=it.tm;if(m!==0&&m!==1&&m!==2)m=s.ta?1:0;if(m===1&&!s.ta)m=0;return m;}
 function setItemColor(it,hex){it.color=hex;if(spriteOf(it))it.tint=true;} // 照片樣子的家具：一選顏色就開始染色（it.tint）；畫的家具本來就用 it.color
 function furnSVG(it,sel){ // 一件家具：有照片就用照片；沒有就先畫影子（畫面方向固定往右下，不跟著家具轉）再畫本體。選到的加藍框
   const t=furnType(it.name),c=/^#[0-9a-f]{6}$/i.test(it.color)?it.color:'#cccccc',p=toS(it.x,it.y);
@@ -2439,14 +2475,22 @@ function furnSVG(it,sel){ // 一件家具：有照片就用照片；沒有就先
   if(sk){
     // 照片硬拉成家具的寬×深（本體那一框對到家具的框，四周的淡影自然落在框外），所以尺寸、位置跟畫的一樣準
     const s=SPR[sk],sx=W/s.w,sy=D/s.h;
-    let use='<use href="#sp-'+sk+'" x="'+f1(-W/2-s.x*sx)+'" y="'+f1(-D/2-s.y*sy)+'" width="'+f1(s.W*sx)+'" height="'+f1(s.H*sy)+'" pointer-events="none"',flt='';
+    let use='<use href="#sp-'+sk+'" x="'+f1(-W/2-s.x*sx)+'" y="'+f1(-D/2-s.y*sy)+'" width="'+f1(s.W*sx)+'" height="'+f1(s.H*sy)+'" pointer-events="none"',flt='',tail='';
     if(it.tint){
       // 改色：每個點先算出亮度，再乘上選的顏色；除以代表亮度，讓「選的顏色」剛好落在家具主要的那個明暗上，皺褶與木紋的深淺都還在。黑色的影子乘完還是黑的
-      const m=parseInt(c.slice(1),16),row=v=>{const q=v/255/s.l;return (q*0.2126).toFixed(4)+' '+(q*0.7152).toFixed(4)+' '+(q*0.0722).toFixed(4)+' 0 0 ';};
+      const m=parseInt(c.slice(1),16),tm=tintMode(it,sk);
+      // 平塗（tm=2）：顏色的 78% 是固定的、22% 才跟著明暗，所以幾乎是純色塊，只留一點點立體感。固定的那部分乘在「不透明度」上，四周半透明的影子才不會變成一圈彩色
+      const kb=tm===2?0.22:1,ka=tm===2?0.78:0,row=v=>{const q=v/255/s.l*kb;return (q*0.2126).toFixed(4)+' '+(q*0.7152).toFixed(4)+' '+(q*0.0722).toFixed(4)+' '+(v/255*ka).toFixed(4)+' 0 ';};
       flt='<filter id="ft'+it.id+'" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="'+row(m>>16&255)+row(m>>8&255)+row(m&255)+'0 0 0 1 0"/></filter>';
-      use+=' filter="url(#ft'+it.id+')"';
+      if(tm===1){
+        // 只染主要部分：先畫一張原本的照片，上面再疊一張染過色、但只露出那個範圍（例如被子）的
+        const a=s.ta,cx=-W/2+a[0]*W,cy=-D/2+a[1]*D;
+        // 裁切要掛在外面包的 <g> 上，不能直接掛在 <use> 上：<use> 的 x、y 會連裁切框一起搬走（第一版就是這樣，染到的變成左上角一小塊）
+        flt+='<clipPath id="fc'+it.id+'"><rect x="'+f1(cx)+'" y="'+f1(cy)+'" width="'+f1((a[2]-a[0])*W)+'" height="'+f1((a[3]-a[1])*D)+'"/></clipPath>'+use+'/><g clip-path="url(#fc'+it.id+')">';
+        use+=' filter="url(#ft'+it.id+')"';tail='</g>';
+      }else use+=' filter="url(#ft'+it.id+')"';
     }
-    return '<g class="furn" transform="translate('+n1(p[0])+' '+n1(p[1])+')'+tf+'"><rect'+box+' fill="#000" fill-opacity="0"/>'+flt+use+'/>'+(sel?'<rect class="selbox"'+box+' rx="2"/>':'')+'</g>';
+    return '<g class="furn" transform="translate('+n1(p[0])+' '+n1(p[1])+')'+tf+'"><rect'+box+' fill="#000" fill-opacity="0"/>'+flt+use+'/>'+tail+(sel?'<rect class="selbox"'+box+' rx="2"/>':'')+'</g>';
   }
   const k=(FURN_H[t]||1)*5*view.s; // 影子偏多少（畫面像素）：高度 × 5 公分 × 縮放
   let h='';
@@ -2490,11 +2534,9 @@ function render(){
     if(two)h+='<text class="itxt"'+st+' x="'+n1(c[0])+'" y="'+n1(c[1]+fs*0.67)+'">'+sz+'</text>';
   }
   const si=getSel();
-  const gaps=opts.gaps?furnGaps(si||null):[];
-  if(si&&opts.clear){
-    for(const c of clearances(si)){
-      // 這個方向比牆更近的地方有家具擋著（而且擋在正中間那條線上）：離牆的距離就不畫了，下面會畫家具間距
-      if(gaps.some(g=>g.dx===c.dx&&g.dy===c.dy&&g.d<c.d&&(c.dx!==0?(si.y>=g.lo&&si.y<=g.hi):(si.x>=g.lo&&si.x<=g.hi))))continue;
+  const DL=distLines(),gaps=DL.gaps;
+  {
+    for(const c of DL.clr){
       const a=toS(c.x1,c.y1),q=toS(c.x2,c.y2);
       h+='<g class="clr"><line x1="'+n1(a[0])+'" y1="'+n1(a[1])+'" x2="'+n1(q[0])+'" y2="'+n1(q[1])+'"/><text x="'+n1((a[0]+q[0])/2)+'" y="'+n1((a[1]+q[1])/2)+'">'+Math.round(c.d)+'</text></g>';
     }
@@ -2514,6 +2556,7 @@ function render(){
     h+='</g>';
   }
   svg.innerHTML=h;
+  if(V3.on)v3Draw(true); // 3D 模式開著：內容有變就重建立體場景
   let unit=100; if(unit*view.s>220)unit=50; if(unit*view.s<45)unit=200; if(unit*view.s<45)unit=500;
   $('#bar').style.width=(unit*view.s).toFixed(0)+'px'; $('#barTxt').textContent=unit+' 公分';
 }
@@ -2534,10 +2577,10 @@ function fillForm(){
   const it=getSel(); $('#selForm').hidden=!it; $('#noSel').hidden=!!it; if(!it)return;
   const e=ext(it);
   const set=(id,v)=>{const el=$(id);if(document.activeElement!==el)el.value=v;};
-  set('#fName',it.name);set('#fW',it.w);set('#fD',it.d);set('#fRot',it.rot);
+  set('#fName',it.name);set('#fW',it.w);set('#fD',it.d);set('#fRot',it.rot);set('#fH',Math.round((it.h>0?it.h:furnH0(it))*10)/10);
   const sp=screenPos(it);
   set('#fX',Math.round(sp[0]*10)/10);set('#fY',Math.round(sp[1]*10)/10);set('#fColor',it.color);
-  $('#bOrig').hidden=!(it.tint&&spriteOf(it));
+  $('#bOrig').hidden=!(it.tint&&spriteOf(it)); tmUI(it);
 }
 function select(id){selId=id;fillForm();renderList();draw();}
 function refresh(){fillForm();renderList();draw();}
@@ -2585,7 +2628,7 @@ function restore(str,keepHist,fromFile){
     for(const k of Object.keys(sp)){ if(base[k]!==undefined&&sp[k]===base[k])delete sp[k]; }
   }
   plan=Object.assign({},DEFAULT_PLAN,sp);
-  items=(o.items||[]).map(i=>({id:+i.id||0,name:String(i.name||'家具'),w:+i.w||50,d:+i.d||50,x:+i.x||0,y:+i.y||0,rot:+i.rot||0,color:i.color||'#cccccc',tint:!!i.tint}));
+  items=(o.items||[]).map(i=>({id:+i.id||0,name:String(i.name||'家具'),w:+i.w||50,d:+i.d||50,x:+i.x||0,y:+i.y||0,rot:+i.rot||0,color:i.color||'#cccccc',h:+i.h>0?+i.h:undefined,tint:!!i.tint,tm:(i.tm===0||i.tm===1||i.tm===2)?i.tm:undefined}));
   items.forEach((it,k)=>{if(!it.id)it.id=1000+k;});
   nextId=items.reduce((m,i)=>Math.max(m,i.id),0)+1;
   if(!getSel())selId=null;
@@ -2638,7 +2681,7 @@ function layClean(list){ // 線上讀回來的東西先整理過（別人可能�
   return o;
 }
 function planDiff(){const d={};for(const k in DEFAULT_PLAN)if(plan[k]!==DEFAULT_PLAN[k])d[k]=plan[k];return d;} // 只記跟預設不一樣的尺寸：以後程式改預設值，沒改過的會跟著走
-function layContent(){const r=v=>Math.round(v*10)/10;return {items:items.map(i=>Object.assign({name:i.name,w:i.w,d:i.d,x:r(i.x),y:r(i.y),rot:i.rot,color:i.color},i.tint?{tint:1}:{})),plan:planDiff()};}
+function layContent(){const r=v=>Math.round(v*10)/10;return {items:items.map(i=>Object.assign({name:i.name,w:i.w,d:i.d,x:r(i.x),y:r(i.y),rot:i.rot,color:i.color},i.h>0?{h:i.h}:{},i.tint?{tint:1}:{},(i.tm===0||i.tm===1||i.tm===2)?{tm:i.tm}:{})),plan:planDiff()};}
 function laySnap(){return JSON.stringify(layContent());}
 function layApply(c){ // 把一份配置的內容放到畫面上。線上資料庫不存空的陣列／物件，所以 items、plan 可能整個不見，要當成空的
   const raw=c&&c.items,its=Array.isArray(raw)?raw:(raw&&typeof raw==='object'?Object.values(raw):[]);
@@ -2803,8 +2846,8 @@ placeLay(); if(mqPhone.addEventListener)mqPhone.addEventListener('change',placeL
 
 /* ================= 家具操作 ================= */
 function addItem(p){
-  const c=toW(cw/2,ch/2),k=items.length%6;
-  const it={id:nextId++,name:p[0],w:p[1],d:p[2],x:Math.round(c[0])+k*10,y:Math.round(c[1])+k*10,rot:0,color:p[3],tint:!!p[4]};
+  const c=V3.on?[V3.tx,V3.tz]:toW(cw/2,ch/2),k=items.length%6; // 3D 開著：放在鏡頭看的那個中心點
+  const it={id:nextId++,name:p[0],w:p[1],d:p[2],x:Math.round(c[0])+k*10,y:Math.round(c[1])+k*10,rot:0,color:p[3],tint:!!p[4],tm:p[4]>=2?p[4]-2:undefined}; // p[4]：0 不染、1 染（方式自動）、2/3/4 染＋調色方式 0/1/2
   items.push(it); selId=it.id; commit(); refresh();
 }
 function rotateSel(deg){const it=getSel();if(!it)return;it.rot=((it.rot+deg)%360+360)%360;commit();refresh();}
@@ -2892,7 +2935,7 @@ let lpTimer=0;     // 手機長按的計時器
 const DBL_MS=450, LONG_MS=550;
 function startNameEdit(it){
   finishNameEdit(true); finishDimEdit(true); closeMenu();
-  const c=toS(it.x,it.y), sr=stage.getBoundingClientRect();
+  const c=V3.on?v3ToScreen(it.x,it.h>0?it.h:furnH0(it),it.y):toS(it.x,it.y), sr=stage.getBoundingClientRect(); // 3D 時放在家具頂上那個位置
   nameBox.style.left=Math.max(92,Math.min(sr.width-92,c[0]))+'px'; nameBox.style.top=Math.max(40,Math.min(sr.height-40,c[1]))+'px';
   nameIn.value=it.name; nameBox.hidden=false; naming={id:it.id,old:it.name};
   try{nameIn.focus();nameIn.select();}catch(_){}                       // 當場 focus，手機鍵盤才會跳
@@ -2916,7 +2959,7 @@ nameBox.addEventListener('mousedown',e=>{if(e.target!==nameIn)e.preventDefault()
 function openMenu(it,x,y){ // x,y＝圖上的畫面座標（滑鼠／手指的位置）
   finishDimEdit(true); finishNameEdit(true); cancelLP();
   if(selId!==it.id)select(it.id);
-  $('#ctxColorIn').value=/^#[0-9a-f]{6}$/i.test(it.color)?it.color:'#cccccc'; $('#ctxOrig').hidden=!(it.tint&&spriteOf(it));
+  $('#ctxColorIn').value=/^#[0-9a-f]{6}$/i.test(it.color)?it.color:'#cccccc'; $('#ctxOrig').hidden=!(it.tint&&spriteOf(it)); tmUI(it);
   menu.hidden=false;
   const sr=stage.getBoundingClientRect();
   menu.style.left=Math.max(4,Math.min(sr.width-menu.offsetWidth-4,x))+'px'; menu.style.top=Math.max(4,Math.min(sr.height-menu.offsetHeight-4,y))+'px';
@@ -2932,6 +2975,15 @@ menu.addEventListener('click',e=>{
 menu.addEventListener('contextmenu',e=>e.preventDefault());
 // 選單裡的「改顏色」：邊選邊看，選定才記進復原
 $('#ctxColorIn').addEventListener('input',e=>{const it=getSel();if(!it)return;setItemColor(it,e.target.value);$('#ctxOrig').hidden=!(it.tint&&spriteOf(it));fillForm();draw();});
+// 調色方式的下拉選單（側邊欄 #fTm 與選單裡的 #ctxTm 是同一件事的兩個入口）。只有「照片樣子、而且已經染色」的家具才出現
+function tmUI(it){
+  const sk=it?spriteOf(it):null,show=!!(it&&sk&&it.tint),s=sk?SPR[sk]:null;
+  $('#fTmRow').hidden=$('#ctxTmRow').hidden=!show; if(!show)return;
+  const opts=[[0,'整件染（保留光影）']]; if(s.ta)opts.push([1,'只染'+s.tn+'（其他不變）']); opts.push([2,'平塗（色塊）']);
+  for(const id of ['#fTm','#ctxTm']){const el=$(id);el.innerHTML='';for(const o of opts){const e=document.createElement('option');e.value=o[0];e.textContent=o[1];el.appendChild(e);}el.value=String(tintMode(it,sk));}
+}
+for(const id of ['#fTm','#ctxTm'])$(id).addEventListener('change',e=>{const it=getSel();if(!it)return;it.tm=+e.target.value;commit();refresh();tmUI(it);});
+$('#ctxTmRow').addEventListener('click',e=>e.stopPropagation());
 $('#ctxColorIn').addEventListener('change',()=>{commit();});
 document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target))closeMenu();},true); // 點選單以外的地方＝關掉選單
 svg.addEventListener('contextmenu',e=>{
@@ -3037,13 +3089,13 @@ function zoomAt(px,py,f){
 svg.addEventListener('wheel',e=>{e.preventDefault();closeMenu();finishNameEdit(true);const p=loc(e);zoomAt(p[0],p[1],Math.exp(-e.deltaY*0.0015));},{passive:false});
 
 /* ================= 按鈕 ================= */
-$('#bZoomIn').onclick=()=>zoomAt(cw/2,ch/2,1.25);
-$('#bZoomOut').onclick=()=>zoomAt(cw/2,ch/2,0.8);
-$('#bFit').onclick=()=>{fit();draw();};
-$('#bRot').onclick=()=>{view.rot=(view.rot+90)%360;try{localStorage.setItem(ROT_KEY,String(view.rot));}catch(_){}fit();fillForm();draw();};
+$('#bZoomIn').onclick=()=>V3.on?v3Zoom(0.8):zoomAt(cw/2,ch/2,1.25);
+$('#bZoomOut').onclick=()=>V3.on?v3Zoom(1.25):zoomAt(cw/2,ch/2,0.8);
+$('#bFit').onclick=()=>{if(V3.on){v3Reset();v3Draw();return;}fit();draw();};
+$('#bRot').onclick=()=>{if(V3.on){V3.yaw+=Math.PI/2;v3Draw();return;}view.rot=(view.rot+90)%360;try{localStorage.setItem(ROT_KEY,String(view.rot));}catch(_){}fit();fillForm();draw();};
 $('#bGaps').classList.toggle('on',opts.gaps);
 $('#bGaps').onclick=()=>{opts.gaps=!opts.gaps;$('#bGaps').classList.toggle('on',opts.gaps);try{localStorage.setItem(GAPS_KEY,opts.gaps?'1':'0');}catch(_){}draw();};
-$('#bMeasure').onclick=()=>{measure.on=!measure.on;measure.a=measure.b=measure.hover=null;$('#bMeasure').classList.toggle('on',measure.on);svg.classList.toggle('measuring',measure.on);draw();};
+$('#bMeasure').onclick=()=>{measure.on=!measure.on;measure.a=measure.b=measure.hover=null;$('#bMeasure').classList.toggle('on',measure.on);svg.classList.toggle('measuring',measure.on);stage.classList.toggle('ms',measure.on);draw();};
 $('#bRotL').onclick=()=>rotateSel(-90); $('#bRotR').onclick=()=>rotateSel(90);
 $('#bDel').onclick=delSel; $('#bDup').onclick=dupSel; $('#bUndo').onclick=undo;
 $('#bClear').onclick=()=>{if(items.length&&confirm('確定清空所有家具？（可以按復原救回）')){items=[];selId=null;commit();refresh();}};
@@ -3073,7 +3125,7 @@ function cleanPreset(p){
   if(!Array.isArray(p))return null;
   const name=String(p[0]||'').trim()||'家具', w=+p[1], d=+p[2];
   const color=/^#[0-9a-f]{6}$/i.test(p[3])?p[3]:'#f2b5a0';
-  return (w>0&&d>0)?[name,w,d,color,p[4]?1:0]:null; // 第 5 個＝照片樣子的家具要不要染色
+  return (w>0&&d>0)?[name,w,d,color,p[4]>0?Math.min(4,Math.round(+p[4])||1):0]:null; // 第 5 個：0 不染、1 染（方式自動）、2/3/4 染＋調色方式 0/1/2
 }
 function addMyPreset(p,quiet){
   p=cleanPreset(p); if(!p)return false;
@@ -3109,7 +3161,7 @@ $('#bNew').onclick=()=>{
 $('#nName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#bNew').click();}});
 $('#bKeep').onclick=()=>{
   const it=getSel(); if(!it)return;
-  addMyPreset([it.name,it.w,it.d,it.color,it.tint?1:0]);
+  addMyPreset([it.name,it.w,it.d,it.color,it.tint?((it.tm===0||it.tm===1||it.tm===2)?it.tm+2:1):0]);
   const b=$('#bKeep'); b.textContent='已存成按鈕 ✓'; setTimeout(()=>{b.textContent='存成按鈕';},1500);
 };
 loadMy(); renderMy();
@@ -3121,12 +3173,13 @@ function bindNum(id,fn){
 }
 bindNum('#fW',(it,v)=>{if(v>0)it.w=v;});
 bindNum('#fD',(it,v)=>{if(v>0)it.d=v;});
+bindNum('#fH',(it,v)=>{if(v>0)it.h=v;}); // 高度只影響 3D；沒填過就用 furnH0() 的預設
 bindNum('#fRot',(it,v)=>{it.rot=((v%360)+360)%360;});
 bindNum('#fX',(it,v)=>{setScreenPos(it,v,null);});
 bindNum('#fY',(it,v)=>{setScreenPos(it,null,v);});
 $('#fName').addEventListener('input',()=>{const it=getSel();if(it){it.name=$('#fName').value;renderList();draw();}});
 $('#fName').addEventListener('change',commit);
-$('#fColor').addEventListener('input',()=>{const it=getSel();if(it){setItemColor(it,$('#fColor').value);$('#bOrig').hidden=!(it.tint&&spriteOf(it));draw();}});
+$('#fColor').addEventListener('input',()=>{const it=getSel();if(it){setItemColor(it,$('#fColor').value);$('#bOrig').hidden=!(it.tint&&spriteOf(it));tmUI(it);draw();}});
 $('#bOrig').onclick=()=>{const it=getSel();if(it&&it.tint){it.tint=false;commit();refresh();}};
 let nColorTouched=false; $('#nColor').addEventListener('input',()=>{nColorTouched=true;});
 $('#fColor').addEventListener('change',commit);
@@ -3144,15 +3197,367 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){if(!menu.hidden)closeMenu();else if(measure.on)$('#bMeasure').click();else select(null);return;}
   const it=getSel(); if(!it)return;
   const st=e.shiftKey?10:1, mv={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,-st],ArrowDown:[0,st]}[e.key];
-  if(mv){e.preventDefault();const v=rotv(mv[0],mv[1],-view.rot);it.x+=v[0];it.y+=v[1];commit();refresh();}
+  if(mv){e.preventDefault();const v=rotv(mv[0],mv[1],-(V3.on?Math.round(V3.yaw/(Math.PI/2))*90:view.rot));it.x+=v[0];it.y+=v[1];commit();refresh();} // 3D 時照鏡頭方向（取最近的 90 度）
   else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();delSel();}
   else if(e.key.toLowerCase()==='r'){rotateSel(90);}
 });
+
+/* ================= 3D 模式（只看，不在 3D 裡編輯） ================= */
+// nate 2026-11-19：貼了一張斜上方看的立體平面圖，「你有可能做一個模式是變成這種3D圖嗎?? 如果家具寫實的無法 你可以家具如果是3D圖時 改成向量的」
+// 做法：用瀏覽器內建的 WebGL 直接畫（不載任何外部程式庫，維持單一檔案）。整個場景都是「長方體」：
+//   牆＝平面圖上每一條牆線往上長成一片薄牆；兩條靠很近的平行線（隔間、中間那道牆）中間補實心；柱子、地板、門口的橘色門檻；
+//   家具＝照種類用幾個長方體拼出來（沙發＝椅背＋扶手＋坐墊…），高度是一般家具的常見高度，不是量的。
+// 座標：平面圖的 x → 立體的 X、平面圖的 y → 立體的 Z、往上是 Y，單位都是公分。
+// 誰擋住誰交給顯示卡的深度測試，所以不用自己排前後。光是固定方向的，每個面的亮度只看它朝哪邊。
+const V3={on:false,gl:null,prog:null,buf:null,count:0,yaw:0,pitch:1.0,dist:1800,tx:0,tz:0,wallH:110,raf:0,ptrs:new Map(),pinch:null,mvp:null};
+const cv3=$('#gl3');
+const hx3=h=>{const v=parseInt((/^#[0-9a-f]{6}$/i.test(h)?h:'#cccccc').slice(1),16);return [(v>>16&255)/255,(v>>8&255)/255,(v&255)/255];};
+const sh3=(c,t)=>{const to=t>0?1:0,a=Math.abs(t);return [c[0]+(to-c[0])*a,c[1]+(to-c[1])*a,c[2]+(to-c[2])*a];}; // t>0 變亮、t<0 變暗
+function v3Box(out,x0,y0,z0,x1,y1,z1,rgb,T){ // 一個長方體（六個面、每面兩個三角形）。T＝家具的位置與角度；沒給就是直接用場景座標
+  if(!(x1>x0)||!(y1>y0)||!(z1>z0))return;
+  const P=(x,y,z)=>T?[T.cx+x*T.c-z*T.s,y,T.cz+x*T.s+z*T.c]:[x,y,z];
+  const quad=(a,b,c,d,n)=>{const nn=T?[n[0]*T.c-n[2]*T.s,n[1],n[0]*T.s+n[2]*T.c]:n;for(const v of [a,b,c,a,c,d]){const p=P(v[0],v[1],v[2]);out.push(p[0],p[1],p[2],nn[0],nn[1],nn[2],rgb[0],rgb[1],rgb[2]);}};
+  quad([x0,y1,z0],[x0,y1,z1],[x1,y1,z1],[x1,y1,z0],[0,1,0]);  quad([x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[0,-1,0]);
+  quad([x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1],[0,0,1]);  quad([x1,y0,z0],[x0,y0,z0],[x0,y1,z0],[x1,y1,z0],[0,0,-1]);
+  quad([x1,y0,z1],[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[1,0,0]);  quad([x0,y0,z0],[x0,y0,z1],[x0,y1,z1],[x0,y1,z0],[-1,0,0]);
+}
+function furnH0(it){ // 每種家具預設多高（公分，離地最高的主要部分）。平面圖沒有高度，這些是一般家具的常見尺寸；nate 可以在「選到的家具」的「高度」自己改
+  const t=furnType(it.name),n=String(it.name||''),sk=furnSprite(t,it);
+  switch(t){
+    case 'sofa':return 82; case 'bed':return 92; case 'table':return /几/.test(n)?42:75; case 'chair':return 90;
+    case 'altar':return (sk==='altarWall'||/壁掛|吊掛|懸掛|懸空|掛牆|半空|吊/.test(n))?106:110;
+    case 'cabinet':return /床頭/.test(n)?55:(sk==='shoe'||/鞋櫃|矮櫃|斗櫃|邊櫃/.test(n))?95:200;
+    case 'tvstand':return 45; case 'tv':return 95+it.w*0.56; case 'fridge':return 180; case 'toilet':return 80;
+    case 'basin':return 85; case 'washer':return 85; case 'tub':return 55; case 'stove':return 85;
+  }
+  return 75;
+}
+function v3Furn(out,it){ // 一件家具。佔地一定剛好是 寬×深（不可以有任何一塊超出去）。裡面的座標：寬沿 x（-W/2～W/2）、深沿 z（-D/2 是靠牆／椅背那邊，+D/2 是正面）、y 是高度
+  const t=furnType(it.name),sk=furnSprite(t,it),W=it.w,D=it.d,r=it.rot*Math.PI/180,T={cx:it.x,cz:it.y,c:Math.cos(r),s:Math.sin(r)},n=String(it.name||'');
+  const own=!sk||it.tint;                               // 畫的家具本來就用自己的顏色；照片樣子的家具有染色才用，沒染就用接近照片的顏色
+  const ky=it.h>0?it.h/furnH0(it):1;                    // 有填高度：整件照比例拉高或壓低（furnH0 是這種家具預設的高度）
+  const col=def=>hx3(own?it.color:def), B=(a,b,c,d,e,f,g)=>v3Box(out,a,b*ky,c,d,e*ky,f,g,T);
+  const x0=-W/2,x1=W/2,z0=-D/2,z1=D/2,WHITE=[0.96,0.96,0.95];
+  const legs=(h,c,g,ins)=>{for(const q of [[x0+ins,z0+ins],[x1-ins-g,z0+ins],[x0+ins,z1-ins-g],[x1-ins-g,z1-ins-g]])B(q[0],0,q[1],q[0]+g,h,q[1]+g,c);};
+  switch(t){
+    case 'sofa':{
+      const c=col('#8d8d8d'),arm=clamp(W*0.09,9,20),bk=clamp(D*0.25,12,24),L=sk==='sofaL'||/[LＬ][\s　]*[型形字]|[LＬ][\s　]*沙發|轉角|貴妃/i.test(n);
+      const dm=L?Math.min(D*0.5,95):D,zf=z0+dm,xr=L?x1:x1-arm;                    // L 型：靠背那一長條只佔前面 dm 深，貴妃椅在右邊往前伸
+      const seats=/三人/.test(n)?3:/雙人|兩人|二人/.test(n)?2:/單人/.test(n)?1:Math.max(1,Math.round((W-2*arm)/62));
+      B(x0,0,z0,x1,82,z0+bk,sh3(c,-.12));                                          // 椅背
+      B(x0,0,z0+bk*0.5,x0+arm,60,zf,sh3(c,-.06)); if(!L)B(x1-arm,0,z0+bk*0.5,x1,60,zf,sh3(c,-.06)); // 扶手
+      B(x0+arm,0,z0+bk,xr,30,zf,sh3(c,-.22));                                      // 底座
+      const gap=1.5,sw=(xr-(x0+arm)-gap*(seats-1))/seats;
+      for(let i=0;i<seats;i++){const sx=x0+arm+i*(sw+gap);B(sx,30,z0+bk,sx+sw,44,zf-1,sh3(c,.12));B(sx+1.5,44,z0+bk-3,sx+sw-1.5,72,z0+bk+12,sh3(c,.04));} // 坐墊、靠枕
+      if(L){const cw=Math.min(W*0.38,100);B(x1-cw,0,zf,x1,30,z1,sh3(c,-.22));B(x1-cw,30,zf-1,x1,44,z1-1,sh3(c,.12));} // 貴妃椅
+      break;}
+    case 'bed':{
+      const part=sk&&it.tint&&tintMode(it,sk)===1,all=it.tint&&!part,c=hx3(it.tint?it.color:'#8d8d8d'),hd=clamp(D*0.045,5,10); // part＝只染被子
+      B(x0,0,z0,x1,26,z1,all?sh3(c,-.4):hx3('#6c6c6c')); B(x0,0,z0,x1,92,z0+hd,all?sh3(c,-.5):hx3('#5e5e5e'));   // 床架、床頭板
+      B(x0+2,26,z0+hd,x1-2,46,z1-2,all?sh3(c,.6):hx3('#d9d9d6'));                                                 // 床墊
+      const np=W>=130?2:1,pg=clamp(W*0.04,4,8),ph=clamp(D*0.2,26,44),pw=Math.min((W-4-pg*(np+1))/np,78),tot=np*pw+(np-1)*pg;
+      for(let i=0;i<np;i++){const px=-tot/2+i*(pw+pg);B(px,46,z0+hd+5,px+pw,57,z0+hd+5+ph,all?sh3(c,-.18):hx3('#7d7d7d'));} // 枕頭
+      const zb=z0+D*0.325;B(x0+1,46,zb,x1-1,52,z1-1,c);B(x0+1,52,zb,x1-1,54.5,zb+clamp(D*0.12,14,26),sh3(c,.3));   // 被子、反摺那一截
+      break;}
+    case 'table':{
+      const tea=/几/.test(n),c=col(tea?'#b5895f':'#cfae84'),h=tea?42:75,g=clamp(Math.min(W,D)*0.07,3,6);
+      B(x0,h-4,z0,x1,h,z1,c);legs(h-4,sh3(c,-.35),g,3);if(tea)B(x0+6,12,z0+6,x1-6,14,z1-6,sh3(c,-.15));
+      break;}
+    case 'altar':{
+      const wall=sk==='altarWall'||/壁掛|吊掛|懸掛|懸空|掛牆|半空|吊/.test(n),c=col('#a3271f'),h=wall?106:110,gold=[0.79,0.64,0.15],red=[0.75,0.2,0.16];
+      B(x0,h-6,z0,x1,h,z1,c);
+      if(wall){B(x0,h-30,z0,x1,h-6,z0+4,sh3(c,-.2));B(x0+6,h-22,z0+4,x0+10,h-6,z1-8,sh3(c,-.3));B(x1-10,h-22,z0+4,x1-6,h-6,z1-8,sh3(c,-.3));} // 掛牆的：背板＋兩支托架，底下是空的
+      else{legs(h-6,sh3(c,-.25),6,1);B(x0+3,h-22,z0+3,x1-3,h-6,z1-3,sh3(c,-.15));}
+      const br=clamp(Math.min(W,D)*0.11,4,7),cz=-D*0.08;B(-br,h,cz-br,br,h+10,cz+br,gold);                           // 香爐
+      for(const k of [-1,1])B(k*W*0.32-2,h,cz-2,k*W*0.32+2,h+17,cz+2,red);                                           // 一對燭台
+      for(const k of [-1,0,1])B(k*9-2,h,D*0.22-2,k*9+2,h+4,D*0.22+2,WHITE);                                          // 三杯茶
+      break;}
+    case 'chair':{const c=col('#9a9a9a');legs(43,hx3('#8a6a4a'),4,2);B(x0,43,z0+2,x1,48,z1,c);B(x0,48,z0,x1,90,z0+5,sh3(c,-.2));break;}
+    case 'cabinet':{
+      const low=sk==='shoe'||/鞋櫃|矮櫃|斗櫃|邊櫃|床頭櫃/.test(n),c=col(low?'#b07f55':'#4d4d4d'),h=/床頭/.test(n)?55:low?95:200;
+      B(x0,0,z0,x1,h-3,z1-0.6,c);B(x0,h-3,z0,x1,h,z1,sh3(c,.15));                                                    // 櫃身（正面往內縮 0.6 留給門縫）、檯面
+      const nd=clamp(Math.round(W/50),1,8);for(let i=1;i<nd;i++)B(x0+W*i/nd-0.5,4,z1-0.6,x0+W*i/nd+0.5,h-5,z1,sh3(c,-.45)); // 門縫（做在櫃身裡面，不超出佔地）
+      break;}
+    case 'tvstand':{
+      const c=col('#b07f55'),tw=Math.min(W*0.72,150),tz=z0+D*0.3;
+      B(x0,0,z0,x1,45,z1,c);B(-tw*0.12,45,tz-3,tw*0.12,49,tz+9,hx3('#30363c'));B(-tw/2,49,tz,tw/2,49+tw*0.56,tz+4,hx3('#15191d'));
+      break;}
+    case 'tv':{const h0=95;B(-W*0.16,h0+W*0.2,z0,W*0.16,h0+W*0.36,z0+D*0.4,hx3('#7b8794'));B(x0,h0,z0+D*0.4,x1,h0+W*0.56,z1,hx3('#15191d'));break;} // 掛在牆上：離地 95
+    case 'fridge':{const c=col('#c9ced2'),zb=z1-2.5;B(x0,0,z0,x1,180,zb,c);B(x0,118,zb,x1,119,zb+0.4,sh3(c,-.4));B(x0+W*0.08,60,zb,x0+W*0.13,110,z1,sh3(c,-.5));B(x0+W*0.08,128,zb,x0+W*0.13,165,z1,sh3(c,-.5));break;} // 把手算在深度裡面
+    case 'toilet':{const c=col('#f4f4f2'),tk=clamp(D*0.28,10,22);B(x0,0,z0,x1,80,z0+tk,c);B(x0+W*0.08,0,z0+tk,x1-W*0.08,40,z1-D*0.06,c);B(x0,40,z0+tk,x1,43,z1,sh3(c,-.06));break;}
+    case 'basin':{const c=col('#f4f4f2');B(x0,62,z0,x1,85,z1,c);B(x0+W*0.14,84,z0+D*0.25,x1-W*0.14,85.3,z1-D*0.12,sh3(c,-.14));B(-2,85,z0+2,2,97,z0+7,hx3('#b7c0c8'));B(-5,0,z0,5,62,z0+10,sh3(c,-.05));break;}
+    case 'washer':{const c=col('#f1f1ef'),zb=z1-1;B(x0,0,z0,x1,85,zb,c);B(x0+W*0.2,20,zb,x1-W*0.2,62,z1,hx3('#8fa3b3'));B(x0+3,70,zb,x1-3,80,zb+0.6,sh3(c,-.25));break;}
+    case 'tub':{const c=col('#f6f6f4'),e=clamp(Math.min(W,D)*0.1,4,8);B(x0,0,z0,x1,55,z1,c);B(x0+e,54,z0+e,x1-e,55.6,z1-e,hx3('#cfe4ef'));break;}
+    case 'stove':{const c=hx3('#30363c'),nb=W>=90?3:W>=50?2:1,rr=Math.min(W/(nb*3),D*0.25);B(x0,0,z0,x1,85,z1,c);for(let i=0;i<nb;i++){const cx=x0+W*(i+0.5)/nb;B(cx-rr,85,-rr,cx+rr,87,rr,hx3('#111418'));}break;}
+    default:{const c=hx3(it.color);B(x0,0,z0,x1,75,z1,c);B(x0,0,z0,x1,78,z0+clamp(D*0.16,3,12),sh3(c,-.2));}       // 認不出來的：75 高的方塊，靠牆那邊高一點點、深一點
+  }
+}
+function v3Solid(o,R,H){ // 把一堆地上的長方形 [x0,z0,x1,z1,顏色] 合成一整塊、高 H 的實心體：只畫頂面，以及「隔壁是空的」那些側面
+  const key=v=>Math.round(v*100)/100,uniq=a=>[...new Set(a.map(key))].sort((p,q)=>p-q);
+  const xs=uniq(R.flatMap(r=>[r[0],r[2]])),zs=uniq(R.flatMap(r=>[r[1],r[3]])),nx=xs.length-1,nz=zs.length-1,cell=new Array(Math.max(0,nx*nz)).fill(null);
+  for(let i=0;i<nx;i++){const cx=(xs[i]+xs[i+1])/2;for(let j=0;j<nz;j++){const cz=(zs[j]+zs[j+1])/2;for(const r of R)if(cx>r[0]&&cx<r[2]&&cz>r[1]&&cz<r[3])cell[i*nz+j]=r[4];}} // 用所有長方形的邊把地面切成格子，每格看有沒有被蓋到
+  const at=(i,j)=>(i<0||j<0||i>=nx||j>=nz)?null:cell[i*nz+j];
+  const quad=(a,b,c,d,n,rgb)=>{for(const v of [a,b,c,a,c,d])o.push(v[0],v[1],v[2],n[0],n[1],n[2],rgb[0],rgb[1],rgb[2]);};
+  for(let i=0;i<nx;i++)for(let j=0;j<nz;j++){
+    const c=at(i,j);if(!c)continue;const x0=xs[i],x1=xs[i+1],z0=zs[j],z1=zs[j+1];
+    quad([x0,H,z0],[x0,H,z1],[x1,H,z1],[x1,H,z0],[0,1,0],c);
+    if(!at(i-1,j))quad([x0,0,z0],[x0,0,z1],[x0,H,z1],[x0,H,z0],[-1,0,0],c);
+    if(!at(i+1,j))quad([x1,0,z1],[x1,0,z0],[x1,H,z0],[x1,H,z1],[1,0,0],c);
+    if(!at(i,j-1))quad([x1,0,z0],[x0,0,z0],[x0,H,z0],[x1,H,z0],[0,0,-1],c);
+    if(!at(i,j+1))quad([x0,0,z1],[x1,0,z1],[x1,H,z1],[x0,H,z1],[0,0,1],c);
+  }
+}
+function v3WallRects(){ // 牆與柱子在地上佔的長方形 [x0,z0,x1,z1,顏色]
+  // nate 2026-11-19：「尺寸比例也是要對的喔」。平面圖的線是「室內看到的牆面」，所以立體的牆不可以往室內長：
+  //   外牆（線的一邊是屋內、另一邊是屋外）→ 整個厚度都往屋外長，室內一公分都不佔；
+  //   兩條靠很近的平行線（隔間 15、中間那道牆 19）→ 剛好填在兩條線中間，厚度就是平面圖的數字；
+  //   屋內單獨一條線（廁所的牆）→ 平面圖沒有它的厚度，畫成 3 公分的薄牆、以線為中心（每邊只多 1.5）。
+  // 第一版是每條線各往兩邊長 4 公分，室內每面牆被吃掉 4 公分、家具貼牆時牆會插進家具裡。
+  const g=G,T=8,TI=3,WALL=[0.97,0.97,0.96],R=[],kitT=-Math.max(0,plan.kitW),kD0=Math.min(plan.c1w+plan.top1,g.W),balL=Math.max(0,kD0-Math.max(0,plan.balL)),hasK=plan.kitW>0,hasB=hasK&&plan.balL>0;
+  const inside=(x,z)=>(x>0&&x<g.W&&z>0&&z<g.yBot)||(hasK&&x>kD0&&x<g.W&&z>kitT&&z<0)||(hasB&&x>balL&&x<kD0&&z>kitT&&z<0); // 這一點在不在屋子裡（主屋、廚房、陽台）
+  const L=[]; // 每條牆線：{hz 是不是橫的, a,b 沿著走的範圍, c 固定的那個座標, side：-1/+1＝屋外在哪一邊、0＝兩邊都是屋內}
+  for(const s of g.walls){
+    const hz=Math.abs(s[1]-s[3])<1e-6;if(!hz&&Math.abs(s[0]-s[2])>=1e-6)continue;
+    const a=hz?Math.min(s[0],s[2]):Math.min(s[1],s[3]),b=hz?Math.max(s[0],s[2]):Math.max(s[1],s[3]),c=hz?s[1]:s[0],m=(a+b)/2;
+    const inN=hz?inside(m,c-1):inside(c-1,m),inP=hz?inside(m,c+1):inside(c+1,m);
+    L.push({hz,a,b,c,side:inN&&!inP?1:(!inN&&inP?-1:0),cov:[]});
+  }
+  const rect=(l,lo,hi,c0,c1)=>R.push(l.hz?[lo,c0,hi,c1,WALL]:[c0,lo,c1,hi,WALL]);
+  // 有厚度的牆：兩條屋內的平行線、相距 25 公分內、而且有重疊
+  for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++){
+    const p=L[i],q=L[j];if(p.hz!==q.hz||p.side||q.side)continue;
+    const lo=Math.max(p.a,q.a),hi=Math.min(p.b,q.b),d=Math.abs(p.c-q.c);
+    if(d>0.5&&d<=25&&hi-lo>1){rect(p,lo,hi,Math.min(p.c,q.c),Math.max(p.c,q.c));p.cov.push([lo,hi]);q.cov.push([lo,hi]);}
+  }
+  for(const l of L){
+    if(l.side){ // 外牆：往屋外長 T；轉角的地方兩頭各多伸出 T，把角補起來
+      const ext=v=>{const x=l.hz?v:l.c,z=l.hz?l.c:v;return !inside(l.hz?v:l.c-1,l.hz?l.c-1:v)&&!inside(l.hz?v:l.c+1,l.hz?l.c+1:v);};
+      rect(l,ext(l.a-1)?l.a-T:l.a,ext(l.b+1)?l.b+T:l.b,l.side>0?l.c:l.c-T,l.side>0?l.c+T:l.c);
+    }else{   // 屋內單線：沒被「有厚度的牆」蓋到的那幾段才畫薄牆
+      let segs=[[l.a,l.b]];
+      for(const cv of l.cov){const nx=[];for(const sg of segs){if(cv[1]<=sg[0]||cv[0]>=sg[1]){nx.push(sg);continue;}if(cv[0]>sg[0])nx.push([sg[0],cv[0]]);if(cv[1]<sg[1])nx.push([cv[1],sg[1]]);}segs=nx;}
+      for(const sg of segs)if(sg[1]-sg[0]>0.5)rect(l,sg[0],sg[1],l.c-TI/2,l.c+TI/2);
+    }
+  }
+  for(const c of g.cols)R.push([c.x,c.y,c.x+c.w,c.y+c.h,[0.45,0.49,0.53]]); // 柱子放最後：跟牆重疊的地方算柱子的顏色
+  return R;
+}
+function v3DimPos(d){ // 一個尺寸標註在 3D 裡畫在哪：從牆面往外（標註的方向）退 22 公分，第二、三排再各退 30。回傳線的兩端與數字的位置
+  const off=22+(d.tier||0)*30,ox=d.nx*off,oz=d.ny*off;
+  return {x1:d.x1+ox,z1:d.y1+oz,x2:d.x2+ox,z2:d.y2+oz,lx:(d.x1+d.x2)/2+d.nx*(off+14),lz:(d.y1+d.y2)/2+d.ny*(off+14)};
+}
+function v3Build(){ // 整個場景的三角形（每個頂點 9 個數字：位置 3、朝向 3、顏色 3）
+  const o=[],g=G,H=V3.wallH,t=4,kitT=-Math.max(0,plan.kitW),kD0=Math.min(plan.c1w+plan.top1,g.W),balL=Math.max(0,kD0-Math.max(0,plan.balL));
+  // 地板：主屋、廚房、陽台；兩間廁所鋪一層淺灰（稍微高一點點，免得跟底下的地板搶著顯示）
+  v3Box(o,-8,-4,-8,g.W+8,0,g.yBot+8,[0.90,0.85,0.77]);
+  if(plan.kitW>0){v3Box(o,kD0,-4,kitT-8,g.W+8,0.2,0,[0.84,0.84,0.82]); if(plan.balL>0)v3Box(o,balL-8,-4,kitT-8,kD0,0.2,0,[0.80,0.82,0.80]);}
+  const yM1=plan.c1h+plan.l1+plan.c3h;
+  v3Box(o,0,0,yM1,g.xS,0.4,g.yL,[0.86,0.89,0.90]); v3Box(o,0,0,g.yC,g.xS2,0.4,g.yC+plan.l263,[0.86,0.89,0.90]);
+  if(H>0){
+    v3Solid(o,v3WallRects(),H);
+  }
+  for(const d of g.doors){const hzd=Math.abs(d[1]-d[3])<1e-6;if(hzd)v3Box(o,Math.min(d[0],d[2])+0.5,0,d[1]-t/2+0.5,Math.max(d[0],d[2])-0.5,1.5,d[1]+t/2-0.5,[0.88,0.54,0]);else v3Box(o,d[0]-t/2+0.5,0,Math.min(d[1],d[3])+0.5,d[0]+t/2-0.5,1.5,Math.max(d[1],d[3])-0.5,[0.88,0.54,0]);} // 門：地上一條橘色門檻
+  for(const it of items)v3Furn(o,it);
+  // 以下這些線都貼在地板上（很薄的長方體），數字另外用文字疊在畫面上（v3Render 最後那段）
+  const seg=(x1,z1,x2,z2,y,w,c)=>{const L=Math.hypot(x2-x1,z2-z1);if(L<0.01)return;const a=Math.atan2(z2-z1,x2-x1);v3Box(o,-L/2,y,-w/2,L/2,y+0.7,w/2,c,{cx:(x1+x2)/2,cz:(z1+z2)/2,c:Math.cos(a),s:Math.sin(a)});}; // 任意方向的一條線
+  if(opts.dims)for(const d of g.dims){const q=v3DimPos(d),DC=d.warn?[0.78,0.16,0.16]:d.sum?[0.72,0.76,0.80]:[0.42,0.56,0.78]; // 尺寸標註的線＋兩頭的小橫線
+    seg(q.x1,q.z1,q.x2,q.z2,0.4,1.2,DC);seg(q.x1-d.nx*5,q.z1-d.ny*5,q.x1+d.nx*5,q.z1+d.ny*5,0.4,1.2,DC);seg(q.x2-d.nx*5,q.z2-d.ny*5,q.x2+d.nx*5,q.z2+d.ny*5,0.4,1.2,DC);}
+  const DL=distLines();
+  for(const c of DL.clr)seg(c.x1,c.y1,c.x2,c.y2,1.6,1.6,[0.04,0.62,0.44]);                                                    // 離牆（綠）
+  for(const c of DL.gaps){seg(c.x1,c.y1,c.x2,c.y2,2.2,2,[0.49,0.23,0.93]);const px=c.dy?6:0,pz=c.dx?6:0;seg(c.x1-px,c.y1-pz,c.x1+px,c.y1+pz,2.2,2,[0.49,0.23,0.93]);seg(c.x2-px,c.y2-pz,c.x2+px,c.y2+pz,2.2,2,[0.49,0.23,0.93]);} // 家具間距（紫）
+  if(measure.on&&measure.a){const e=measure.b||measure.hover,MC=[0.84,0.2,0.42];v3Box(o,measure.a[0]-3,0,measure.a[1]-3,measure.a[0]+3,6,measure.a[1]+3,MC);
+    if(e){seg(measure.a[0],measure.a[1],e[0],e[1],3,2.4,MC);v3Box(o,e[0]-3,0,e[1]-3,e[0]+3,6,e[1]+3,MC);}}                                       // 量距離（桃紅）：兩個點各一個小方塊、中間一條線
+  const si=getSel();
+  if(si){ // 選到的家具：地板上一圈藍框（比佔地大 2 公分）
+    const a=si.rot*Math.PI/180,T={cx:si.x,cz:si.y,c:Math.cos(a),s:Math.sin(a)},w=si.w/2+2,d=si.d/2+2,k=2.5,B=[0.04,0.37,1];
+    v3Box(o,-w-k,0.6,-d-k,w+k,2.6,-d,B,T);v3Box(o,-w-k,0.6,d,w+k,2.6,d+k,B,T);v3Box(o,-w-k,0.6,-d,-w,2.6,d,B,T);v3Box(o,w,0.6,-d,w+k,2.6,d,B,T);
+  }
+  return new Float32Array(o);
+}
+function m4persp(fovy,asp,n,f){const q=1/Math.tan(fovy/2),o=new Float32Array(16);o[0]=q/asp;o[5]=q;o[10]=(f+n)/(n-f);o[11]=-1;o[14]=2*f*n/(n-f);return o;}
+function m4look(e,c){ // 從 e 看向 c，上方是 +Y
+  let zx=e[0]-c[0],zy=e[1]-c[1],zz=e[2]-c[2],l=Math.hypot(zx,zy,zz)||1;zx/=l;zy/=l;zz/=l;
+  let xx=zz,xy=0,xz=-zx;l=Math.hypot(xx,xz)||1;xx/=l;xz/=l;
+  const yx=zy*xz-zz*xy,yy=zz*xx-zx*xz,yz=zx*xy-zy*xx;
+  return new Float32Array([xx,yx,zx,0,xy,yy,zy,0,xz,yz,zz,0,-(xx*e[0]+xy*e[1]+xz*e[2]),-(yx*e[0]+yy*e[1]+yz*e[2]),-(zx*e[0]+zy*e[1]+zz*e[2]),1]);
+}
+function m4mul(a,b){const o=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++){let s=0;for(let k=0;k<4;k++)s+=a[k*4+r]*b[c*4+k];o[c*4+r]=s;}return o;}
+function v3Init(){ // 第一次開 3D 才做：要 WebGL、編好著色器。做不到就回 false
+  if(V3.gl)return true;
+  const gl=cv3.getContext('webgl',{antialias:true,alpha:false})||cv3.getContext('experimental-webgl');
+  if(!gl)return false;
+  const mk=(type,src)=>{const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;};
+  const pr=gl.createProgram();
+  // 每個面的亮度＝0.6（環境光）＋0.4×它朝著光的程度。光從右上前方來：朝上的最亮，四個側面各不一樣，看得出立體
+  gl.attachShader(pr,mk(gl.VERTEX_SHADER,'attribute vec3 p;attribute vec3 n;attribute vec3 c;uniform mat4 m;varying vec3 vc;void main(){float d=max(dot(normalize(n),normalize(vec3(0.45,0.85,0.3))),0.0);vc=c*(0.6+0.4*d);gl_Position=m*vec4(p,1.0);}'));
+  gl.attachShader(pr,mk(gl.FRAGMENT_SHADER,'precision mediump float;varying vec3 vc;void main(){gl_FragColor=vec4(vc,1.0);}'));
+  gl.linkProgram(pr);if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(pr));
+  V3.gl=gl;V3.prog=pr;V3.buf=gl.createBuffer();
+  return true;
+}
+function v3Mvp(dist,asp){ // 鏡頭：繞著 (tx,0,tz) 這一點，水平角 yaw、仰角 pitch、距離 dist
+  const cp=Math.cos(V3.pitch),eye=[V3.tx+dist*cp*Math.sin(V3.yaw),dist*Math.sin(V3.pitch),V3.tz+dist*cp*Math.cos(V3.yaw)];
+  return m4mul(m4persp(0.52,asp,Math.max(5,dist*0.05),dist*6+3000),m4look(eye,[V3.tx,0,V3.tz]));
+}
+function v3Reset(){ // 鏡頭回到預設：跟平面圖同一個方向（平面圖畫面的下面那一側＝鏡頭這一側），斜著往下看，距離調到整間剛好看得到
+  const b=G.bbox,asp=Math.max(0.2,cw/Math.max(1,ch));V3.tx=(b.x0+b.x1)/2;V3.tz=(b.y0+b.y1)/2;V3.yaw=view.rot*Math.PI/180;V3.pitch=1.0;
+  const pts=[];for(const x of [b.x0,b.x1])for(const z of [b.y0,b.y1])for(const y of [0,Math.max(V3.wallH,100)])pts.push([x,y,z]);
+  const padY=Math.min(0.3,110/Math.max(1,ch)),fits=d=>{const m=v3Mvp(d,asp);for(const q of pts){const w=m[3]*q[0]+m[7]*q[1]+m[11]*q[2]+m[15];if(w<=0)return false;
+    const sx=(m[0]*q[0]+m[4]*q[1]+m[8]*q[2]+m[12])/w,sy=(m[1]*q[0]+m[5]*q[1]+m[9]*q[2]+m[13])/w;if(Math.abs(sx)>0.95||Math.abs(sy)>1-padY)return false;}return true;};
+  let lo=150,hi=12000;for(let i=0;i<22;i++){const mid=(lo+hi)/2;if(fits(mid))hi=mid;else lo=mid;} // 二分法找「剛好放得下」的距離（上下留給按鈕與說明）
+  V3.dist=hi;
+}
+function v3Draw(rebuild){if(rebuild)V3.count=-1;if(!V3.raf)V3.raf=requestAnimationFrame(v3Render);}
+function v3Render(){
+  V3.raf=0;if(!V3.on||!V3.gl)return;
+  const gl=V3.gl,dpr=Math.min(2,window.devicePixelRatio||1),w=Math.max(2,Math.round(cw*dpr)),h=Math.max(2,Math.round(ch*dpr));
+  if(cv3.width!==w||cv3.height!==h){cv3.width=w;cv3.height=h;}
+  gl.viewport(0,0,w,h);gl.clearColor(1,1,1,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);
+  gl.useProgram(V3.prog);gl.bindBuffer(gl.ARRAY_BUFFER,V3.buf);
+  if(V3.count<0){const a=v3Build();gl.bufferData(gl.ARRAY_BUFFER,a,gl.STATIC_DRAW);V3.count=a.length/9;}
+  const mvp=v3Mvp(V3.dist,w/h);V3.mvp=mvp;
+  gl.uniformMatrix4fv(gl.getUniformLocation(V3.prog,'m'),false,mvp);
+  const loc=nm=>gl.getAttribLocation(V3.prog,nm),at=(nm,off)=>{const l=loc(nm);gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,3,gl.FLOAT,false,36,off);};
+  at('p',0);at('n',12);at('c',24);
+  gl.drawArrays(gl.TRIANGLES,0,V3.count);
+  // 疊在畫面上的文字：把立體的位置換算成畫面上的位置，用一般的網頁文字放上去（所以尺寸數字可以直接點）
+  const box=$('#v3lab');let hh='';V3.dimHits=[];
+  const lab=(x,y,z,html,cls,attr,k)=>{const cwv=mvp[3]*x+mvp[7]*y+mvp[11]*z+mvp[15];if(cwv<=0)return;
+    const sx=(mvp[0]*x+mvp[4]*y+mvp[8]*z+mvp[12])/cwv,sy=(mvp[1]*x+mvp[5]*y+mvp[9]*z+mvp[13])/cwv;if(Math.abs(sx)>1.1||Math.abs(sy)>1.1)return;
+    const px=(sx+1)/2*cw,py=(1-sy)/2*ch;if(k)V3.dimHits.push({k,x:px,y:py,w:estW(html)+12,h:20});                 // 可以點的數字：記下它在畫面上的位置與大小
+    hh+='<span'+(cls?' class="'+cls+'"':'')+(attr||'')+' style="left:'+px.toFixed(1)+'px;top:'+py.toFixed(1)+'px">'+html+'</span>';};
+  if(opts.dims){ // 跟平面圖一樣，受「牆面尺寸標註」那個勾選控制
+    for(const l of G.labels){if(l.gray)lab(l.x,3,l.y,esc(l.t),'');else if(l.parts)for(const pt of l.parts)lab(l.x,3,l.y,esc(pt[0]),'dm',pt[1]?' data-k="'+pt[1]+'"':'',pt[1]);}
+    for(const d of G.dims){const q=v3DimPos(d);lab(q.lx,1,q.lz,esc(d.t),'dm'+(d.warn?' warn':'')+(d.sum?' sum':''),d.k?' data-k="'+d.k+'"':'',d.k);}
+  }
+  const DL=distLines();
+  for(const c of DL.clr)lab((c.x1+c.x2)/2,2,(c.y1+c.y2)/2,String(Math.round(c.d)),'cl');
+  for(const c of DL.gaps)lab((c.x1+c.x2)/2,3,(c.y1+c.y2)/2,String(Math.round(c.d)),'gp');
+  if(measure.on&&measure.a){const e=measure.b||measure.hover;if(e){const dx=Math.abs(e[0]-measure.a[0]),dy=Math.abs(e[1]-measure.a[1]);
+    lab((measure.a[0]+e[0])/2,8,(measure.a[1]+e[1])/2,Math.round(Math.hypot(dx,dy))+' 公分（橫 '+Math.round(dx)+'／直 '+Math.round(dy)+'）','ms');}}
+  box.innerHTML=hh;
+}
+function v3Zoom(f){V3.dist=clamp(V3.dist*f,150,12000);v3Draw();}
+function v3Set(on){ // 進出 3D 模式
+  if(on){
+    let okGL=false;try{okGL=v3Init();}catch(e){okGL=false;}
+    if(!okGL){alert('這個瀏覽器開不了 3D（不支援 WebGL，或被關掉了）。');return;}
+    finishDimEdit(true);finishNameEdit(true);closeMenu();
+  }
+  V3.on=on;$('#b3D').classList.toggle('on',on);stage.classList.toggle('v3',on);
+  if(on){v3Reset();v3Draw(true);}else{draw();}
+}
+$('#b3D').onclick=()=>v3Set(!V3.on);
+$('#v3H').addEventListener('input',e=>{V3.wallH=+e.target.value;$('#v3Hv').textContent=V3.wallH;v3Draw(true);});
+// 3D 的操作：一指／滑鼠左鍵拖＝轉；右鍵拖、Shift＋拖、兩指一起拖＝平移；滾輪、兩指捏＝遠近
+cv3.addEventListener('contextmenu',e=>e.preventDefault());
+const v3Pinch=()=>{const a=[...V3.ptrs.values()];return {d:Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])||1,mx:(a[0][0]+a[1][0])/2,my:(a[0][1]+a[1][1])/2};};
+/* ---- 3D 裡也能選、拖家具（nate 2026-11-19：「3D模式下 我無法移動家具」；第 19 條原本做成只能看） ---- */
+// 做法：手指／滑鼠按下去的那一點，從鏡頭射一條線出去（v3Ray），看它先碰到哪一件家具的外框（v3Pick）。
+// 碰到家具＝選它並開始拖：拖的時候把同一條線跟「當初碰到的那個高度」的水平面求交點，家具就跟著那一點在地板上走（照樣走 place()，所以貼牆吸附、移動單位都跟平面一樣）。
+// 沒碰到家具＝轉鏡頭（原本的行為）。
+function v3Ray(px,py){ // 畫布上的一點（像素）→ 從鏡頭射出去的線 {o 起點, d 方向}
+  const cp=Math.cos(V3.pitch),e=[V3.tx+V3.dist*cp*Math.sin(V3.yaw),V3.dist*Math.sin(V3.pitch),V3.tz+V3.dist*cp*Math.cos(V3.yaw)];
+  let fx=V3.tx-e[0],fy=-e[1],fz=V3.tz-e[2],l=Math.hypot(fx,fy,fz)||1;fx/=l;fy/=l;fz/=l;           // 前
+  let rx=-fz,rz=fx;l=Math.hypot(rx,rz)||1;rx/=l;rz/=l;                                              // 右＝前×上
+  const ux=-rz*fy,uy=rz*fx-rx*fz,uz=rx*fy,tf=Math.tan(0.26),nx=(2*px/cw-1)*tf*(cw/Math.max(1,ch)),ny=(1-2*py/ch)*tf; // 上＝右×前；0.26＝視角的一半（跟 v3Mvp 的 0.52 是同一個）
+  let dx=fx+rx*nx+ux*ny,dy=fy+uy*ny,dz=fz+rz*nx+uz*ny;l=Math.hypot(dx,dy,dz)||1;
+  return {o:e,d:[dx/l,dy/l,dz/l]};
+}
+function v3Pick(px,py){ // 這一點點到哪一件家具（最靠近鏡頭的那件）。回傳 {it, y：點到的高度}，沒點到回 null。牆不擋：隔著牆也點得到後面的家具
+  const R=v3Ray(px,py);let best=null;
+  for(const it of items){
+    const a=it.rot*Math.PI/180,c=Math.cos(a),s=Math.sin(a),ox=R.o[0]-it.x,oz=R.o[2]-it.y;
+    const o=[ox*c+oz*s,R.o[1],-ox*s+oz*c],d=[R.d[0]*c+R.d[2]*s,R.d[1],-R.d[0]*s+R.d[2]*c];        // 把線轉到家具自己的座標裡，家具就是一個正的長方體
+    const lo=[-it.w/2,0,-it.d/2],hi=[it.w/2,Math.max(10,(it.h>0?it.h:furnH0(it))*1.15),it.d/2];
+    let t0=0,t1=1e9,hit=true;
+    for(let k=0;k<3&&hit;k++){
+      if(Math.abs(d[k])<1e-9){if(o[k]<lo[k]||o[k]>hi[k])hit=false;}
+      else{let p=(lo[k]-o[k])/d[k],q=(hi[k]-o[k])/d[k];if(p>q){const w=p;p=q;q=w;}t0=Math.max(t0,p);t1=Math.min(t1,q);if(t0>t1)hit=false;}
+    }
+    if(hit&&(!best||t0<best.t))best={it,t:t0,y:R.o[1]+R.d[1]*t0};
+  }
+  return best;
+}
+function v3Floor(px,py,y){const R=v3Ray(px,py);if(R.d[1]>-0.02)return null;const t=(y-R.o[1])/R.d[1];return [R.o[0]+R.d[0]*t,R.o[2]+R.d[2]*t];} // 畫面上的一點對到高度 y 的水平面上的哪裡
+function v3ToScreen(x,y,z){const m=V3.mvp||v3Mvp(V3.dist,cw/Math.max(1,ch)),w=m[3]*x+m[7]*y+m[11]*z+m[15];return [((m[0]*x+m[4]*y+m[8]*z+m[12])/w+1)/2*cw,(1-(m[1]*x+m[5]*y+m[9]*z+m[13])/w)/2*ch];}
+const v3Loc=e=>{const r=cv3.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top];};
+function v3EndDrag(){ // 放開家具
+  cancelLP();const d=V3.drag;V3.drag=null;cv3.style.cursor='';if(!d)return;
+  if(d.moved){commit();refresh();}
+}
+// 3D 裡點尺寸數字＝改尺寸。數字是疊在畫布上的文字，但文字不接滑鼠／手指：第一版讓文字自己接，結果手機上數字很密，從數字上開始拖（搬家具、轉鏡頭、兩指縮放）全部被文字攔走。
+// 改成畫布放開時自己看「這一下是不是點在某個數字上」（V3.dimHits 是 v3Render 每次記下來的數字位置）
+function v3DimAt(px,py){const H=V3.dimHits||[];for(let i=H.length-1;i>=0;i--){const h=H[i];if(Math.abs(px-h.x)<=h.w/2&&Math.abs(py-h.y)<=h.h/2)return h;}return null;}
+cv3.addEventListener('pointerdown',e=>{
+  try{cv3.setPointerCapture(e.pointerId);}catch(_){}
+  finishNameEdit(true);
+  const p=v3Loc(e),right=e.button===2;
+  V3.ptrs.set(e.pointerId,[e.clientX,e.clientY,right||e.shiftKey,e.clientX,e.clientY,right]); // [目前 x,y, 是不是平移, 按下去的 x,y, 是不是右鍵]
+  e.preventDefault();
+  if(V3.ptrs.size>=2){v3EndDrag();V3.pinch=v3Pinch();return;}                                // 第二指放下：家具停在目前位置，改成縮放。當下就記住兩指的距離（等手指動了才記，第一下的移動會被吃掉）
+  V3.pinch=null;
+  if(right||e.shiftKey||measure.on)return;                                                        // 量距離開著：不抓家具（拖＝轉鏡頭、點＝下量測點）
+  const h=v3Pick(p[0],p[1]);
+  if(h){
+    const f=v3Floor(p[0],p[1],h.y)||[h.it.x,h.it.y];
+    V3.drag={it:h.it,y:h.y,ox:h.it.x-f[0],oz:h.it.y-f[1],moved:false,tol:e.pointerType==='touch'?8:3};
+    if(selId!==h.it.id)select(h.it.id);
+    cv3.style.cursor='move';
+    if(e.pointerType==='touch'){const it=h.it;lpTimer=setTimeout(()=>{lpTimer=0;if(V3.drag&&V3.drag.it===it&&!V3.drag.moved){V3.drag=null;cv3.style.cursor='';openMenu(it,p[0],p[1]);}},LONG_MS);} // 手機長按家具＝選單
+  }
+});
+cv3.addEventListener('pointermove',e=>{
+  const o=V3.ptrs.get(e.pointerId);
+  if(!o){ // 沒按著、只是滑過：量距離點了第一點之後，線跟著游標走
+    if(measure.on&&measure.a&&!measure.b){const p=v3Loc(e),f=v3Floor(p[0],p[1],0);if(f){measure.hover=snapPoint(f);v3Draw(true);}}
+    else if(!measure.on){const p=v3Loc(e);cv3.style.cursor=v3DimAt(p[0],p[1])?'pointer':'';}                              // 滑過可以點的數字：游標變手指
+    return;
+  }
+  const dx=e.clientX-o[0],dy=e.clientY-o[1];
+  const pan=(px,py)=>{const k=V3.dist*0.0011,sy=Math.sin(V3.yaw),cy=Math.cos(V3.yaw);V3.tx+=(-px*cy-py*sy)*k;V3.tz+=(px*sy-py*cy)*k;}; // 畫面的左右上下 → 地板上的方向
+  if(V3.ptrs.size>=2){
+    o[0]=e.clientX;o[1]=e.clientY;const q=v3Pinch();
+    if(V3.pinch){V3.dist=clamp(V3.dist*V3.pinch.d/q.d,150,12000);pan(q.mx-V3.pinch.mx,q.my-V3.pinch.my);}
+    V3.pinch=q;v3Draw();return;
+  }
+  if(V3.drag){
+    const d=V3.drag;
+    if(!d.moved&&Math.abs(e.clientX-o[3])+Math.abs(e.clientY-o[4])<=d.tol)return;             // 還沒超過門檻：算點、不算拖
+    cancelLP();const p=v3Loc(e),f=v3Floor(p[0],p[1],d.y);if(!f)return;
+    place(d.it,f[0]+d.ox,f[1]+d.oz,e.altKey);d.moved=true;fillForm();v3Draw(true);
+    o[0]=e.clientX;o[1]=e.clientY;return;
+  }
+  if(o[2])pan(dx,dy);else{V3.yaw-=dx*0.006;V3.pitch=clamp(V3.pitch+dy*0.005,0.15,1.55);}
+  o[0]=e.clientX;o[1]=e.clientY;v3Draw();
+});
+const v3Up=e=>{
+  const o=V3.ptrs.get(e.pointerId);V3.ptrs.delete(e.pointerId);V3.pinch=null;
+  const still=o&&Math.abs(e.clientX-o[3])+Math.abs(e.clientY-o[4])<=4,wasDrag=!!V3.drag,dragIt=V3.drag?V3.drag.it:null,dragMoved=!!(V3.drag&&V3.drag.moved);
+  v3EndDrag();
+  if(e.type!=='pointerup'||!o||!still||V3.ptrs.size)return;
+  const p=v3Loc(e);
+  if(measure.on&&!o[5]){ // 量距離：在地板上點第一點、第二點（會吸到牆上），第三下重新開始——跟平面圖一樣
+    const f=v3Floor(p[0],p[1],0);if(!f)return;const q=snapPoint(f);
+    if(!measure.a||measure.b){measure.a=q;measure.b=null;measure.hover=null;}else measure.b=q;
+    v3Draw(true);return;
+  }
+  if(!o[5]){const hd=v3DimAt(p[0],p[1]);if(hd){const r=cv3.getBoundingClientRect();startDimEdit(hd.k,{left:r.left+hd.x-hd.w/2,top:r.top+hd.y-hd.h/2,width:hd.w,height:hd.h});try{dimIn.focus();}catch(_){}lastTap=null;return;}} // 點在尺寸數字上＝改尺寸
+  if(dragIt&&!dragMoved&&!o[5]){ // 點一下家具（沒拖）：跟上一次點的是同一件、間隔夠短＝連點兩下＝改名（跟平面圖共用 lastTap）
+    const now=Date.now();
+    if(lastTap&&lastTap.id===dragIt.id&&now-lastTap.t<DBL_MS){lastTap=null;startNameEdit(dragIt);}else lastTap={id:dragIt.id,t:now};
+  }
+  if(o[5]){const h=v3Pick(p[0],p[1]);if(h)openMenu(h.it,p[0],p[1]);}                          // 右鍵在家具上點一下（沒拖）＝選單
+  else if(!wasDrag&&menu.hidden&&selId!==null)select(null);                                    // 在空白處點一下＝取消選取
+};
+cv3.addEventListener('pointerup',v3Up);cv3.addEventListener('pointercancel',v3Up);
+cv3.addEventListener('wheel',e=>{e.preventDefault();v3Zoom(Math.exp(e.deltaY*0.0012));},{passive:false});
 
 /* ================= 啟動 ================= */
 function resize(){
   const r=stage.getBoundingClientRect(); if(r.width<10||r.height<10)return;
   cw=r.width; ch=r.height; svg.setAttribute('viewBox','0 0 '+cw+' '+ch);
+  if(V3.on)v3Draw();
   if(!fitted){fit();fitted=true;}
   draw();
 }
@@ -3165,7 +3570,8 @@ if(cloudOn){ // 定時抓最新的；切回這個分頁時也馬上抓一次。�
 }
 // 給自動測試用
 window.__plan={get G(){return G;},get items(){return items;},get view(){return view;},get myPresets(){return myPresets;},toS,toW,geom,DEFAULT_PLAN,
-  get sprites(){return Object.keys(SPR);},spriteOf,furnGaps,
+  get sprites(){return Object.keys(SPR);},spriteOf,furnGaps,tintMode,V3,v3Build,v3Render,v3WallRects,v3Furn,furnH0,v3Pick,v3ToScreen,
+
 
   get layouts(){return layouts;},get curId(){return curId;},get curRev(){return curRev;},layDirty,layRefresh,cloudOn};
 })();
